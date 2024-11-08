@@ -1,3 +1,4 @@
+using Domain.Animals.Entities;
 using Domain.Animals.Enums;
 using Domain.Animals.ValueObjects;
 using Domain.Foundations.ValueObjects;
@@ -10,11 +11,11 @@ public sealed class Animal : AggregateRoot<AnimalId>
     public string Name { get; }
     public string Description { get; }
     public string Image { get; }
-    public int Age { get; }
+    public int? Age { get; }
     public string CoatColor { get; }
-    public float Weight { get; }
-    public SpecieId SpecieId { get; }
-    public BreedId BreedId { get; }
+    public decimal? Weight { get; }
+    public Specie Specie { get; }
+    public Breed? Breed { get; }
     public AnimalStatus Status { get; }
     public AnimalGender Gender { get; }
     public FoundationId? FoundationId { get; }
@@ -26,11 +27,11 @@ public sealed class Animal : AggregateRoot<AnimalId>
         string name,
         string description,
         string image,
-        int age,
+        int? age,
         string coatColor,
-        float weight,
-        SpecieId specieId,
-        BreedId breedId,
+        decimal? weight,
+        Specie specie,
+        Breed? breed,
         AnimalStatus status,
         AnimalGender gender,
         FoundationId? foundationId,
@@ -44,8 +45,8 @@ public sealed class Animal : AggregateRoot<AnimalId>
         Age = age;
         CoatColor = coatColor;
         Weight = weight;
-        SpecieId = specieId;
-        BreedId = breedId;
+        Specie = specie;
+        Breed = breed;
         Status = status;
         Gender = gender;
         FoundationId = foundationId;
@@ -57,11 +58,11 @@ public sealed class Animal : AggregateRoot<AnimalId>
         string name,
         string description,
         string image,
-        int age,
+        int? age,
         string coatColor,
-        float weight,
-        SpecieId specieId,
-        BreedId breedId,
+        decimal? weight,
+        string specie,
+        string? breed,
         AnimalGender gender,
         FoundationId? foundationId
     )
@@ -74,12 +75,13 @@ public sealed class Animal : AggregateRoot<AnimalId>
             age,
             coatColor,
             weight,
-            specieId,
-            breedId,
+            Specie.Create(specie),
+            Breed.Create(breed),
             AnimalStatus.Abandoned,
             gender,
             foundationId,
             DateTime.UtcNow,
-            DateTime.UtcNow);
+            DateTime.UtcNow
+        );
     }
 }

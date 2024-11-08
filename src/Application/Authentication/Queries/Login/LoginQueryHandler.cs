@@ -13,10 +13,10 @@ internal sealed class LoginQueryHandler(IUserRepository userRepository, IJwtToke
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery command, CancellationToken cancellationToken)
     {
         if (await userRepository.GetByUsernameAsync(command.Username) is not User user)
-            return Errors.Authentication.InvalidCredentias;
+            return Errors.Authentication.InvalidCredentials;
 
         if (user.Password != command.Password)
-            return Errors.Authentication.InvalidCredentias;
+            return Errors.Authentication.InvalidCredentials;
 
         var token = jwtTokenGenerator.GenerateToken(user);
 

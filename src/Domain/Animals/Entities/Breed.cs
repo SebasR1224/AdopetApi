@@ -11,8 +11,11 @@ public sealed class Breed : Entity<BreedId>
         Name = name;
     }
 
-    public static Breed Create(string name)
+    public static Breed? Create(string? name)
     {
+        if (string.IsNullOrEmpty(name))
+            return null;
+
         return new Breed(
             BreedId.CreateUnique(),
             name

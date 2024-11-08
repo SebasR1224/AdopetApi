@@ -11,6 +11,11 @@ public sealed class AnimalId : ValueObject
         Value = value;
     }
 
+    public static AnimalId Create(Guid value)
+    {
+        return new AnimalId(value);
+    }
+
     public static AnimalId CreateUnique()
     {
         return new AnimalId(Guid.NewGuid());

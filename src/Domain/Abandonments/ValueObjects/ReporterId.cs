@@ -1,6 +1,6 @@
 using Domain.Primitives;
 
-namespace Domain.Reporters.ValueObjects;
+namespace Domain.Abandonments.ValueObjects;
 
 public sealed class ReporterId : ValueObject
 {
@@ -14,6 +14,10 @@ public sealed class ReporterId : ValueObject
     public static ReporterId Create(Guid value)
     {
         return new ReporterId(value);
+    }
+    public static ReporterId CreateUnique()
+    {
+        return new ReporterId(Guid.NewGuid());
     }
 
     public override IEnumerable<object> GetEqualityComponents()

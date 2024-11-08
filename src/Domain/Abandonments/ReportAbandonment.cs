@@ -1,16 +1,17 @@
+using Domain.Abandonments.Entities;
 using Domain.Abandonments.Enums;
 using Domain.Abandonments.ValueObjects;
+using Domain.Animals;
 using Domain.Animals.ValueObjects;
 using Domain.Common.ValueObjects;
 using Domain.Foundations.ValueObjects;
 using Domain.Primitives;
-using Domain.Reporters.ValueObjects;
 
 namespace Domain.Abandonments;
 
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
-    private readonly List<AnimalId> _animalsIds = [];
+
     public string Title { get; private set; }
     public string Description { get; private set; }
     public List<string> Images { get; private set; } = [];
@@ -19,14 +20,15 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     public DateTime AbandonmentDateTime { get; private set; }
     public TimeSpan AbandonmentDuration => DateTime.UtcNow - AbandonmentDateTime;
     public AbandonmentStatus AbandonmentStatus { get; private set; }
+    public Reporter Reporter { get; private set; }
     public DateTime ReportDateTime { get; private set; }
     public DateTime? RescueDateTime { get; private set; }
     public TimeSpan? ResponseTime { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdateDateTime { get; private set; }
-    public ReporterId ReporterId { get; private set; }
     public FoundationId? FoundationId { get; private set; }
-    public IReadOnlyList<AnimalId> AnimalIds => _animalsIds.AsReadOnly();
+
+    public IReadOnlyCollection<Animal> Animals { get; private set; }
 
     private ReportAbandonment(
         ReportAbandonmentId reportAbandonmentId,
@@ -37,8 +39,9 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         Location location,
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
-        ReporterId reporterId
-        ) : base(reportAbandonmentId)
+        Reporter reporter,
+        IReadOnlyCollection<Animal> animals
+    ) : base(reportAbandonmentId)
     {
         Title = title;
         Description = description;
@@ -47,7 +50,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         Location = location;
         AbandonmentDateTime = abandonmentDateTime;
         AbandonmentStatus = abandonmentStatus;
-        ReporterId = reporterId;
+        Reporter = reporter;
+        Animals = animals;
     }
 
     public static ReportAbandonment Create(
@@ -57,7 +61,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         Location location,
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
-        ReporterId reporterId
+        Reporter reporter,
+        IReadOnlyCollection<Animal> animals
     )
     {
         return new ReportAbandonment(
@@ -69,7 +74,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
             location,
             abandonmentDateTime,
             abandonmentStatus,
-            reporterId
+            reporter,
+            animals
         );
     }
 
@@ -86,4 +92,14 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         Status = ReportStatus.Attending;
     }
 
+
+    public void SetFoundation(FoundationId foundationId)
+    {
+        FoundationId = foundationId;
+    }
+
+    public void UpdateStatus(ReportStatus status)
+    {
+        Status = status;
+    }
 }

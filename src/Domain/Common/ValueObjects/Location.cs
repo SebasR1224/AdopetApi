@@ -46,4 +46,24 @@ public sealed class Location : ValueObject
         yield return City;
         yield return PostalCode;
     }
+
+    public double CalculateDistance(Location otherLocation)
+    {
+        const double EarthRadiusKm = 6371.0;
+
+        double dLat = DegreesToRadians(otherLocation.Latitude - Latitude);
+        double dLon = DegreesToRadians(otherLocation.Longitude - Longitude);
+
+        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                   Math.Cos(DegreesToRadians(Latitude)) * Math.Cos(DegreesToRadians(otherLocation.Latitude)) *
+                   Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        return EarthRadiusKm * c;
+    }
+
+    private static double DegreesToRadians(double degrees)
+    {
+        return degrees * Math.PI / 180.0;
+    }
 }

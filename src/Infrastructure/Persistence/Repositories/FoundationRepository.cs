@@ -11,10 +11,20 @@ public class FoundationRepository : IFoundationRepository
     {
         _foundations.Add(foundation);
     }
-
+    public async Task<List<Foundation>> GetAllAsync()
+    {
+        await Task.CompletedTask;
+        return _foundations;
+    }
     public async Task<Foundation?> GetByIdAsync(FoundationId id)
     {
         await Task.CompletedTask;
         return _foundations.FirstOrDefault(x => x.Id == id);
+    }
+
+    public async Task<List<Foundation>> GetByCityNameAsync(string cityName)
+    {
+        await Task.CompletedTask;
+        return _foundations.Where(x => x.Location.City == cityName).ToList();
     }
 }

@@ -1,10 +1,15 @@
 using System.Text;
+using Amazon.S3;
 using Application.Common.Interfaces.Authentication;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
+using Application.Common.Interfaces.Upload;
 using Infrastructure.Authentication;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Location;
+using Infrastructure.Services.Upload.Aws;
+using Infrastructure.Services.Upload.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +24,11 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistence();
+            .AddPersistence()
+            .AddUploadServices(configuration)
+            .AddServices();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-
         return services;
     }
 
@@ -31,9 +37,27 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReportAbandonmentRepository, ReportAbandonmentRepository>();
         services.AddScoped<IFoundationRepository, FoundationRepository>();
+        services.AddScoped<IAnimalRepository, AnimalRepository>();
+        services.AddScoped<IFileRecordRepository, FileRecordRepository>();
+
         return services;
     }
 
+    private static IServiceCollection AddUploadServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var awsSettings = new AWSSettings();
+        configuration.Bind(AWSSettings.SectionName, awsSettings);
+
+        services.AddAWSService<IAmazonS3>();
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddSingleton<ILocationService, LocationService>(); //TODO use google maps api
+        return services;
+    }
 
     private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {

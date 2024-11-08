@@ -6,24 +6,32 @@ using MediatR;
 namespace Application.Abandonments.Commands.CreateReport;
 
 public record CreateReportAbandonmentCommand(
-    Guid ReporterId,
     string Title,
     string Description,
     List<string> Images,
-    List<AnimalCommand> Animals,
+    ReporterCommand Reporter,
+    IReadOnlyCollection<AnimalCommand> Animals,
     LocationCommand Location,
     DateTime AbandonmentDateTime,
     string AbandonmentStatus
 ) : IRequest<ErrorOr<ReportAbandonment>>;
 
+public record ReporterCommand(
+    string Name,
+    string LastName,
+    string Email,
+    string PhoneNumber,
+    bool IsAnonymous
+);
+
 public record AnimalCommand(
     string Name,
-    string? Image,
+    string Image,
     string Description,
     int? Age,
     string CoatColor,
     string Specie,
     string? Breed,
-    double? Weight,
+    decimal? Weight,
     string Gender
 );
