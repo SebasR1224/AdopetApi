@@ -2,6 +2,7 @@ using Application;
 using Infrastructure;
 using Microsoft.Extensions.FileProviders;
 using Web.API;
+using Web.API.Extensions;
 using Web.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ var app = builder.Build();
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.ApplyMigrations();
     }
 
     app.UseExceptionHandler("/error");

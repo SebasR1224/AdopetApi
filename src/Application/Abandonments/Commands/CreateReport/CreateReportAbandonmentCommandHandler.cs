@@ -5,7 +5,6 @@ using Domain.Abandonments;
 using Domain.Abandonments.Entities;
 using Domain.Abandonments.Enums;
 using Domain.Animals;
-using Domain.Animals.Entities;
 using Domain.Animals.Enums;
 using Domain.Common.Errors;
 using Domain.Common.ValueObjects;
@@ -45,7 +44,6 @@ public sealed class CreateReportAbandonmentCommandHandler(
         var reportAbandonment = ReportAbandonment.Create(
             request.Title,
             request.Description,
-            request.Images,
             location,
             request.AbandonmentDateTime,
             abandonmentStatus,
@@ -69,6 +67,8 @@ public sealed class CreateReportAbandonmentCommandHandler(
                 null
             )).ToList()
         );
+
+        reportAbandonment.AddImages(request.Images);
 
         //Persistent Report
         var foundations = await foundationRepository.GetByCityNameAsync(location.City);

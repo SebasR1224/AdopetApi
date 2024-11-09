@@ -66,4 +66,8 @@ public sealed class Location : ValueObject
     {
         return degrees * Math.PI / 180.0;
     }
+
+#pragma warning disable CS8618
+    private Location() { }
+#pragma warning restore CS8618
 }

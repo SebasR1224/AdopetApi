@@ -2,19 +2,17 @@ using Domain.Abandonments.Entities;
 using Domain.Abandonments.Enums;
 using Domain.Abandonments.ValueObjects;
 using Domain.Animals;
-using Domain.Animals.ValueObjects;
 using Domain.Common.ValueObjects;
 using Domain.Foundations.ValueObjects;
 using Domain.Primitives;
-
+using DomainFile = Domain.Files.File;
 namespace Domain.Abandonments;
 
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
-
+    private readonly List<DomainFile> _images = [];
     public string Title { get; private set; }
     public string Description { get; private set; }
-    public List<string> Images { get; private set; } = [];
     public ReportStatus Status { get; private set; }
     public Location Location { get; private set; }
     public DateTime AbandonmentDateTime { get; private set; }
@@ -30,11 +28,12 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public IReadOnlyCollection<Animal> Animals { get; private set; }
 
+    public IReadOnlyCollection<DomainFile> Images => _images.AsReadOnly();
+
     private ReportAbandonment(
         ReportAbandonmentId reportAbandonmentId,
         string title,
         string description,
-        List<string> images,
         ReportStatus status,
         Location location,
         DateTime abandonmentDateTime,
@@ -45,7 +44,6 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     {
         Title = title;
         Description = description;
-        Images = images;
         Status = status;
         Location = location;
         AbandonmentDateTime = abandonmentDateTime;
@@ -57,7 +55,6 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     public static ReportAbandonment Create(
         string title,
         string description,
-        List<string> images,
         Location location,
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
@@ -69,7 +66,6 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
             ReportAbandonmentId.CreateUnique(),
             title,
             description,
-            images,
             ReportStatus.Reported,
             location,
             abandonmentDateTime,
@@ -102,4 +98,28 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     {
         Status = status;
     }
+
+    public void AddImage(string url)
+    {
+        var file = DomainFile.Create(
+            url,
+            nameof(ReportAbandonment),
+            Id.Value
+        );
+
+        _images.Add(file);
+    }
+
+    public void AddImages(List<string> images)
+    {
+        foreach (var image in images)
+        {
+            AddImage(image);
+        }
+    }
+
+#pragma warning disable CS8618
+    private ReportAbandonment() { }
+#pragma warning restore CS8618
+
 }

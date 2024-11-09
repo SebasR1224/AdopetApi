@@ -5,12 +5,14 @@ using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Application.Common.Interfaces.Upload;
 using Infrastructure.Authentication;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.Location;
 using Infrastructure.Services.Upload.Aws;
 using Infrastructure.Services.Upload.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,7 +26,7 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistence()
+            .AddPersistence(configuration)
             .AddUploadServices(configuration)
             .AddServices();
 
@@ -32,8 +34,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services)
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReportAbandonmentRepository, ReportAbandonmentRepository>();
         services.AddScoped<IFoundationRepository, FoundationRepository>();

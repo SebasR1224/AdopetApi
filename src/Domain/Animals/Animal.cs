@@ -84,4 +84,9 @@ public sealed class Animal : AggregateRoot<AnimalId>
             DateTime.UtcNow
         );
     }
+
+#pragma warning disable CS8618
+    private Animal() { }
+#pragma warning restore CS8618
+
 }

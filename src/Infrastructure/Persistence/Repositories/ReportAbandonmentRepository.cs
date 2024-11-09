@@ -6,46 +6,40 @@ using Domain.Foundations.ValueObjects;
 
 namespace Infrastructure.Persistence.Repositories;
 
-
-public class ReportAbandonmentRepository : IReportAbandonmentRepository
+public class ReportAbandonmentRepository(ApplicationDbContext context) : IReportAbandonmentRepository
 {
-    private static readonly List<ReportAbandonment> _reportAbandonments = [];
-
     public void Add(ReportAbandonment reportAbandonment)
     {
-        _reportAbandonments.Add(reportAbandonment);
+        context.ReportAbandonments.Add(reportAbandonment);
+        context.SaveChanges();
     }
 
     public async Task<List<ReportAbandonment>> GetReportsByFoundationIdAsync(FoundationId foundationId)
     {
         await Task.CompletedTask;
 
-        return _reportAbandonments.Where(
+        return [.. context.ReportAbandonments.Where(
             r => r.FoundationId! == foundationId &&
             r.Status != ReportStatus.Reported
-        ).ToList();
+        )];
     }
 
     public async Task<List<ReportAbandonment>> GetAllReports()
     {
         await Task.CompletedTask;
 
-        return _reportAbandonments;
+        return [.. context.ReportAbandonments];
     }
 
     public async Task<ReportAbandonment?> GetByIdAsync(ReportAbandonmentId reportAbandonmentId)
     {
         await Task.CompletedTask;
 
-        return _reportAbandonments.FirstOrDefault(r => r.Id == reportAbandonmentId);
+        return context.ReportAbandonments.FirstOrDefault(r => r.Id == reportAbandonmentId);
     }
 
     public void Update(ReportAbandonment reportAbandonment)
     {
-        var index = _reportAbandonments.FindIndex(r => r.Id == reportAbandonment.Id);
-        if (index != -1)
-        {
-            _reportAbandonments[index] = reportAbandonment;
-        }
+        context.ReportAbandonments.Update(reportAbandonment);
     }
 }

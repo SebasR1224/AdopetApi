@@ -1,6 +1,7 @@
 using Application.Abandonments.Commands.CreateReport;
-using Application.Abandonments.Commands.UpdateReportStatus;
+using Application.Common.Commands;
 using Contracts.Abandonment;
+using Contracts.Common;
 using Domain.Abandonments;
 using Domain.Abandonments.Entities;
 using Domain.Animals;
@@ -12,8 +13,13 @@ public class ReportAbandonmentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<(CreateReportAbandonmentRequest request, string reporterId), CreateReportAbandonmentCommand>()
-            .Map(dest => dest, src => src.request);
+        config.NewConfig<CreateReportAbandonmentRequest, CreateReportAbandonmentCommand>()
+            .Map(dest => dest, src => src);
+
+        config.NewConfig<LocationRequest, LocationCommand>()
+            .Map(dest => dest.Latitude, src => src.Latitude)
+            .Map(dest => dest.Longitude, src => src.Longitude)
+            .Map(dest => dest, src => src);
 
         config.NewConfig<ReportAbandonment, ReportAbandonmentResponse>()
             .Map(dest => dest.Id, src => src.Id.Value)

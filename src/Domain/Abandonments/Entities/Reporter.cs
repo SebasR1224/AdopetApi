@@ -54,4 +54,9 @@ public sealed class Reporter : Entity<ReporterId>
     {
         IsActive = false;
     }
+
+#pragma warning disable CS8618
+    private Reporter() { }
+#pragma warning restore CS8618
+
 }

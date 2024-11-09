@@ -6,4 +6,6 @@ public abstract class AggregateRoot<TId> : Entity<TId>
     public AggregateRoot(TId id) : base(id)
     {
     }
+
+    protected AggregateRoot() { }
 }
