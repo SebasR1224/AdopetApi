@@ -12,6 +12,8 @@ public sealed class Reporter : Entity<ReporterId>
     public string PhoneNumber { get; private set; }
     public bool IsAnonymous { get; private set; }
     public bool IsActive { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
     private Reporter(
         ReporterId reporterId,

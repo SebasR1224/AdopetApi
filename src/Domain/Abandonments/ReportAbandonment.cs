@@ -24,7 +24,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     public DateTime? RescueDateTime { get; private set; }
     public TimeSpan? ResponseTime { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
-    public DateTime UpdateDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
     public FoundationId? FoundationId { get; private set; }
 
     public IReadOnlyList<Animal> Animals => _animals.AsReadOnly();
@@ -79,7 +79,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     public void SetRescueDate(DateTime rescueDateTime)
     {
         RescueDateTime = rescueDateTime;
-        UpdateDateTime = DateTime.UtcNow;
+        UpdatedDateTime = DateTime.UtcNow;
 
         if (rescueDateTime > ReportDateTime)
         {
@@ -109,7 +109,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         );
 
         _images.Add(image);
-        UpdateDateTime = DateTime.UtcNow;
+        UpdatedDateTime = DateTime.UtcNow;
     }
 
     public void AddImages(List<string> images)

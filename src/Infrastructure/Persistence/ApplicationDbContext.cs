@@ -1,5 +1,7 @@
 using Domain.Abandonments;
 using Domain.Animals;
+using Domain.FileRecords;
+using Domain.Foundations;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<ReportAbandonment> ReportAbandonments { get; set; }
     public DbSet<Animal> Animals { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Foundation> Foundations { get; set; }
+    public DbSet<FileRecord> FileRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

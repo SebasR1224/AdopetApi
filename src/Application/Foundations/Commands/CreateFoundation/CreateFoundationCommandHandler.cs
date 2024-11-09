@@ -12,8 +12,6 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
 {
     public async Task<ErrorOr<Foundation>> Handle(CreateFoundationCommand request, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
-
         //Validations
         if (Location.Create(
             request.Location.Latitude,
@@ -29,6 +27,7 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
         //Create Foundation
         var foundation = Foundation.Create(
             name: request.Name,
+            legalName: request.LegalName,
             logo: request.Logo,
             description: request.Description,
             nit: request.Nit,
@@ -37,7 +36,7 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
             website: request.Website,
             phoneNumber: request.PhoneNumber,
             mission: request.Mission,
-            vision: request.Vision,
+            vission: request.Vission,
             legalRepresentatives: request.LegalRepresentatives.ConvertAll(lr => LegalRepresentative.Create(
                 lr.Name,
                 lr.LastName,
@@ -49,7 +48,7 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
         );
 
         //Persistence Foundation
-        foundationRepository.Add(foundation);
+        await foundationRepository.AddAsync(foundation);
 
         //Return Foundation
         return foundation;

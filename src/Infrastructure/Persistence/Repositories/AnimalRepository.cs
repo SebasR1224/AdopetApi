@@ -1,21 +1,13 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Animals;
 using Domain.Animals.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class AnimalRepository() : IAnimalRepository
+public class AnimalRepository(ApplicationDbContext context) : IAnimalRepository
 {
-    private static readonly List<Animal> _animals = [];
-    public async Task<List<Animal>> GetAllAsync()
-    {
-        await Task.CompletedTask;
-        return _animals;
-    }
+    public async Task<List<Animal>> GetAllAsync() => await context.Animals.ToListAsync();
 
-    public async Task<Animal?> GetByIdAsync(AnimalId id)
-    {
-        await Task.CompletedTask;
-        return _animals.FirstOrDefault(x => x.Id == id);
-    }
+    public async Task<Animal?> GetByIdAsync(AnimalId id) => await context.Animals.SingleOrDefaultAsync(a => a.Id == id);
 }

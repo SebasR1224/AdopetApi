@@ -1,30 +1,20 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Foundations;
 using Domain.Foundations.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class FoundationRepository : IFoundationRepository
+public class FoundationRepository(ApplicationDbContext context) : IFoundationRepository
 {
-    private static readonly List<Foundation> _foundations = [];
-    public void Add(Foundation foundation)
+    public async Task AddAsync(Foundation foundation)
     {
-        _foundations.Add(foundation);
+        context.Foundations.Add(foundation);
+        await context.SaveChangesAsync();
     }
-    public async Task<List<Foundation>> GetAllAsync()
-    {
-        await Task.CompletedTask;
-        return _foundations;
-    }
-    public async Task<Foundation?> GetByIdAsync(FoundationId id)
-    {
-        await Task.CompletedTask;
-        return _foundations.FirstOrDefault(x => x.Id == id);
-    }
+    public async Task<List<Foundation>> GetAllAsync() => await context.Foundations.ToListAsync();
 
-    public async Task<List<Foundation>> GetByCityNameAsync(string cityName)
-    {
-        await Task.CompletedTask;
-        return _foundations.Where(x => x.Location.City == cityName).ToList();
-    }
+    public async Task<Foundation?> GetByIdAsync(FoundationId id) => await context.Foundations.SingleOrDefaultAsync(f => f.Id == id);
+
+    public async Task<List<Foundation>> GetByCityNameAsync(string cityName) => await context.Foundations.Where(x => x.Location.City == cityName).ToListAsync();
 }

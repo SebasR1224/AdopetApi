@@ -12,23 +12,29 @@ public class ImageConfiguration : IEntityTypeConfiguration<DomainFile>
     {
         builder.ToTable("Files");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(f => f.Id);
 
-        builder.Property(x => x.Id)
+        builder.Property(f => f.Id)
             .ValueGeneratedNever()
             .HasConversion(
                 id => id.Value,
                 value => FileId.Create(value));
 
-        builder.Property(x => x.Url)
+        builder.Property(f => f.Url)
             .HasMaxLength(2048);
 
-        builder.Property(x => x.FileableType)
+        builder.Property(f => f.FileableType)
             .HasMaxLength(255);
 
-        builder.Property(x => x.FileableId)
+        builder.Property(f => f.FileableId)
             .HasMaxLength(255);
 
-        builder.HasIndex(x => new { x.FileableType, x.FileableId });
+        builder.HasIndex(f => new { f.FileableType, f.FileableId });
+
+        builder.Property(f => f.CreatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Property(f => f.UpdatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }

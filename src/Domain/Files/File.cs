@@ -16,8 +16,6 @@ public sealed class File : Entity<FileId>
         Url = url;
         FileableType = fileableType;
         FileableId = fileableId;
-        CreatedDateTime = DateTime.UtcNow;
-        UpdatedDateTime = DateTime.UtcNow;
     }
 
     public static File Create(

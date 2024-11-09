@@ -9,43 +9,40 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class ReportAbandonmentRepository(ApplicationDbContext context) : IReportAbandonmentRepository
 {
-    public void Add(ReportAbandonment reportAbandonment)
+    public async Task AddAsync(ReportAbandonment reportAbandonment)
     {
-        context.ReportAbandonments.Add(reportAbandonment);
-        context.SaveChanges();
+        await context.ReportAbandonments.AddAsync(reportAbandonment);
+        await context.SaveChangesAsync();
     }
 
     public async Task<List<ReportAbandonment>> GetReportsByFoundationIdAsync(FoundationId foundationId)
     {
-        await Task.CompletedTask;
-
-        return [.. context.ReportAbandonments.Where(
-            r => r.FoundationId! == foundationId &&
-            r.Status != ReportStatus.Reported)
+        return await context.ReportAbandonments.Where(
+        r => r.FoundationId! == foundationId &&
+        r.Status != ReportStatus.Reported)
             .Include(r => r.Animals)
             .Include(r => r.Images)
-            .Include(r => r.Reporter)];
+            .Include(r => r.Reporter)
+            .ToListAsync();
     }
 
     public async Task<List<ReportAbandonment>> GetAllReports()
     {
-        await Task.CompletedTask;
-
-        return [.. context.ReportAbandonments
+        return await context.ReportAbandonments
             .Include(r => r.Animals)
             .Include(r => r.Images)
-            .Include(r => r.Reporter)];
+            .Include(r => r.Reporter)
+            .ToListAsync();
     }
 
     public async Task<ReportAbandonment?> GetByIdAsync(ReportAbandonmentId reportAbandonmentId)
     {
-        await Task.CompletedTask;
-
-        return context.ReportAbandonments.FirstOrDefault(r => r.Id == reportAbandonmentId);
+        return await context.ReportAbandonments.FirstOrDefaultAsync(r => r.Id == reportAbandonmentId);
     }
 
-    public void Update(ReportAbandonment reportAbandonment)
+    public async Task UpdateAsync(ReportAbandonment reportAbandonment)
     {
         context.ReportAbandonments.Update(reportAbandonment);
+        await context.SaveChangesAsync();
     }
 }

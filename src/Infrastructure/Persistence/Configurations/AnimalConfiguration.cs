@@ -15,9 +15,9 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
     {
         builder.ToTable("Animals");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(a => a.Id);
 
-        builder.Property(x => x.Id)
+        builder.Property(a => a.Id)
             .ValueGeneratedNever()
             .HasConversion(
                 id => id.Value,
@@ -44,18 +44,9 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
                 .IsRequired(false);
 
         builder.Property(a => a.Specie)
-            .HasConversion(
-                specie => specie.Name,
-                value => Specie.Create(value)
-            )
-            .HasMaxLength(100)
-            .IsRequired(false);
+            .HasMaxLength(100);
 
         builder.Property(a => a.Breed)
-            .HasConversion(
-                breed => breed!.Name,
-                value => Breed.Create(value)
-            )
             .HasMaxLength(100)
             .IsRequired(false);
 
@@ -70,7 +61,8 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
             .HasMaxLength(50)
             .HasConversion(
                 v => v.ToString(),
-                v => (AnimalGender)Enum.Parse(typeof(AnimalGender), v));
+                v => (AnimalGender)Enum.Parse(typeof(AnimalGender), v))
+                .HasMaxLength(10);
 
         builder.Property(a => a.FoundationId)
             .HasConversion(
@@ -83,5 +75,11 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
             .HasForeignKey(a => a.FoundationId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Property(a => a.CreatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Property(a => a.UpdatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }

@@ -7,6 +7,7 @@ namespace Application.Foundations.Commands.CreateFoundation;
 
 public record CreateFoundationCommand(
     string Name,
+    string LegalName,
     string? Logo,
     string Description,
     string Nit,
@@ -14,8 +15,8 @@ public record CreateFoundationCommand(
     string Email,
     string Website,
     string PhoneNumber,
-    string Mission,
-    string Vision,
+    string? Mission,
+    string? Vission,
     List<LegalRepresentativeCommand> LegalRepresentatives
 ) : IRequest<ErrorOr<Foundation>>;
 

@@ -13,13 +13,9 @@ public class ReportAbandonmentMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CreateReportAbandonmentRequest, CreateReportAbandonmentCommand>()
-            .Map(dest => dest, src => src);
-
         config.NewConfig<LocationRequest, LocationCommand>()
             .Map(dest => dest.Latitude, src => src.Latitude)
-            .Map(dest => dest.Longitude, src => src.Longitude)
-            .Map(dest => dest, src => src);
+            .Map(dest => dest.Longitude, src => src.Longitude);
 
         config.NewConfig<ReportAbandonment, ReportAbandonmentResponse>()
             .Map(dest => dest.Id, src => src.Id.Value)
@@ -29,8 +25,7 @@ public class ReportAbandonmentMappingConfig : IRegister
             .Map(dest => dest.Images, src => src.Images.Select(image => image.Url).ToList());
 
         config.NewConfig<Animal, AnimalResponse>()
-            .Map(dest => dest.Id, src => src.Id.Value)
-            .Map(dest => dest.Specie, src => src.Specie.Name);
+            .Map(dest => dest.Id, src => src.Id.Value);
 
         config.NewConfig<Reporter, ReporterResponse>()
             .Map(dest => dest.Id, src => src.Id.Value);

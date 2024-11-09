@@ -21,7 +21,7 @@ public class UpdateReportStatusCommandHandler(IReportAbandonmentRepository aband
 
         report.UpdateStatus(status);
 
-        abandonmentRepository.Update(report);
+        await abandonmentRepository.UpdateAsync(report);
 
         return Unit.Value;
     }

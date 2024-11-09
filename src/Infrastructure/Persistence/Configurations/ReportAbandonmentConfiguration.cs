@@ -70,6 +70,11 @@ public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAba
 
         builder.Ignore(r => r.Images);
 
+        builder.Property(r => r.CreatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Property(r => r.UpdatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.Metadata.FindNavigation(nameof(ReportAbandonment.Animals))!
           .SetPropertyAccessMode(PropertyAccessMode.Field);

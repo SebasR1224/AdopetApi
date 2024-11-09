@@ -6,10 +6,10 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
-    public void Add(User user)
+    public async Task AddAsync(User user)
     {
         context.Users.Add(user);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task<User?> GetByUsernameAsync(string username)

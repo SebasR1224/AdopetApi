@@ -5,21 +5,21 @@ namespace Domain.Users;
 
 public sealed class User : AggregateRoot<UserId>
 {
-    public string Name { get; }
-    public string LastName { get; }
+    public string Name { get; private set; }
+    public string LastName { get; private set; }
     public string FullName => $"{Name} {LastName}";
-    public string PersonalId { get; }
-    public DateOnly BirthDate { get; }
-    public string PhoneNumber { get; }
-    public string Address { get; }
-    public string Email { get; }
-    public string Username { get; }
-    public string Password { get; }
-    public bool Active { get; }
-    public DateTime CreatedDateTime { get; }
-    public DateTime UpdatedDateTime { get; }
+    public string PersonalId { get; private set; }
+    public DateOnly BirthDate { get; private set; }
+    public string PhoneNumber { get; private set; }
+    public string Address { get; private set; }
+    public string Email { get; private set; }
+    public string Username { get; private set; }
+    public string Password { get; private set; }
+    public bool IsActive { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
-    public FoundationId? FoundationId { get; }
+    public FoundationId? FoundationId { get; private set; }
 
     private User(
         UserId id,
@@ -32,10 +32,8 @@ public sealed class User : AggregateRoot<UserId>
         string email,
         string username,
         string password,
-        bool active,
-        FoundationId? foundationId,
-        DateTime createdDateTime,
-        DateTime updatedDateTime
+        bool isActive,
+        FoundationId? foundationId
     ) : base(id)
     {
         Name = name;
@@ -47,10 +45,8 @@ public sealed class User : AggregateRoot<UserId>
         Email = email;
         Username = username;
         Password = password;
-        Active = active;
+        IsActive = isActive;
         FoundationId = foundationId;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
     }
 
     public static User Create(
@@ -78,9 +74,7 @@ public sealed class User : AggregateRoot<UserId>
             username,
             password,
             true,
-            foundationId,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            foundationId
         );
     }
 

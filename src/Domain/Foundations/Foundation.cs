@@ -10,6 +10,7 @@ public sealed class Foundation : AggregateRoot<FoundationId>
 {
     private readonly List<LegalRepresentative> _legalRepresentatives = [];
     public string Name { get; private set; }
+    public string LegalName { get; private set; }
     public string? Logo { get; private set; }
     public string Description { get; set; }
     public string Nit { get; private set; }
@@ -17,17 +18,20 @@ public sealed class Foundation : AggregateRoot<FoundationId>
     public string Email { get; private set; }
     public string Website { get; private set; }
     public string PhoneNumber { get; private set; }
-    public string Mission { get; private set; }
-    public string Vision { get; private set; }
+    public string? Mission { get; private set; }
+    public string? Vission { get; private set; }
     public AverageRating AverageRating { get; private set; }
     public FoundationStatus Status { get; private set; }
+    public bool IsActive { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
+
     public IReadOnlyList<LegalRepresentative> LegalRepresentatives => _legalRepresentatives.AsReadOnly();
 
     private Foundation(
         FoundationId foundationId,
         string name,
+        string legalName,
         string? logo,
         string description,
         string nit,
@@ -35,15 +39,17 @@ public sealed class Foundation : AggregateRoot<FoundationId>
         string email,
         string website,
         string phoneNumber,
-        string mission,
-        string vision,
+        string? mission,
+        string? vission,
         AverageRating averageRating,
         FoundationStatus status,
+        bool isActive,
         List<LegalRepresentative> legalRepresentatives
 
     ) : base(foundationId)
     {
         Name = name;
+        LegalName = legalName;
         Logo = logo;
         Description = description;
         Nit = nit;
@@ -52,13 +58,15 @@ public sealed class Foundation : AggregateRoot<FoundationId>
         Website = website;
         PhoneNumber = phoneNumber;
         Mission = mission;
-        Vision = vision;
+        Vission = vission;
         AverageRating = averageRating;
         Status = status;
+        IsActive = isActive;
         _legalRepresentatives = legalRepresentatives;
     }
     public static Foundation Create(
         string name,
+        string legalName,
         string? logo,
         string description,
         string nit,
@@ -66,14 +74,15 @@ public sealed class Foundation : AggregateRoot<FoundationId>
         string email,
         string website,
         string phoneNumber,
-        string mission,
-        string vision,
+        string? mission,
+        string? vission,
         List<LegalRepresentative> legalRepresentatives
     )
     {
         return new Foundation(
             FoundationId.CreateUnique(),
             name,
+            legalName,
             logo,
             description,
             nit,
@@ -82,9 +91,10 @@ public sealed class Foundation : AggregateRoot<FoundationId>
             website,
             phoneNumber,
             mission,
-            vision,
+            vission,
             AverageRating.CreateNew(),
             FoundationStatus.PendingRegistration,
+            true,
             legalRepresentatives
         );
     }

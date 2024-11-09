@@ -29,6 +29,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PersonalId)
             .HasMaxLength(20);
 
+        builder.Property(u => u.BirthDate)
+            .HasColumnType("date");
+
         builder.Property(u => u.PhoneNumber)
             .HasMaxLength(20);
 
@@ -36,7 +39,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(200);
 
         builder.Property(u => u.Email)
-            .HasMaxLength(30);
+            .HasMaxLength(100);
 
         builder.Property(u => u.Username)
             .HasMaxLength(50);
@@ -44,7 +47,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Password)
             .HasMaxLength(255);
 
-        builder.Property(u => u.Active);
+        builder.Property(u => u.IsActive)
+            .HasDefaultValue(true);
 
         builder.HasOne<Foundation>()
            .WithMany()
@@ -58,7 +62,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 value => FoundationId.Create(value)
             ).IsRequired(false);
 
+        builder.Property(x => x.CreatedDateTime)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+        builder.Property(x => x.UpdatedDateTime)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();

@@ -1,4 +1,3 @@
-using Domain.Animals.Entities;
 using Domain.Animals.Enums;
 using Domain.Animals.ValueObjects;
 using Domain.Foundations.ValueObjects;
@@ -8,19 +7,19 @@ namespace Domain.Animals;
 
 public sealed class Animal : AggregateRoot<AnimalId>
 {
-    public string Name { get; }
-    public string Description { get; }
-    public string Image { get; }
-    public int? Age { get; }
-    public string CoatColor { get; }
-    public decimal? Weight { get; }
-    public Specie Specie { get; }
-    public Breed? Breed { get; }
-    public AnimalStatus Status { get; }
-    public AnimalGender Gender { get; }
-    public FoundationId? FoundationId { get; }
-    public DateTime CreateDateTime { get; }
-    public DateTime UpdateDateTime { get; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public string Image { get; private set; }
+    public int? Age { get; private set; }
+    public string CoatColor { get; private set; }
+    public decimal? Weight { get; private set; }
+    public string Specie { get; private set; }
+    public string? Breed { get; private set; }
+    public AnimalStatus Status { get; private set; }
+    public AnimalGender Gender { get; private set; }
+    public FoundationId? FoundationId { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
     private Animal(
         AnimalId animalId,
@@ -30,8 +29,8 @@ public sealed class Animal : AggregateRoot<AnimalId>
         int? age,
         string coatColor,
         decimal? weight,
-        Specie specie,
-        Breed? breed,
+        string specie,
+        string? breed,
         AnimalStatus status,
         AnimalGender gender)
        : base(animalId)
@@ -68,8 +67,8 @@ public sealed class Animal : AggregateRoot<AnimalId>
             age,
             coatColor,
             weight,
-            Specie.Create(specie),
-            Breed.Create(breed),
+            specie,
+            breed,
             AnimalStatus.Abandoned,
             gender
         );

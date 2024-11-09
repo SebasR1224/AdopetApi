@@ -13,15 +13,11 @@ public class FileRecord : AggregateRoot<FileRecordId>
     private FileRecord(
         FileRecordId id,
         string fileName,
-        string url,
-        DateTime createdDateTime,
-        DateTime updatedDateTime
+        string url
     ) : base(id)
     {
         FileName = fileName;
         Url = url;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
     }
 
     public static FileRecord Create(string fileName, string url)
@@ -29,9 +25,10 @@ public class FileRecord : AggregateRoot<FileRecordId>
         return new FileRecord(
             FileRecordId.CreateUnique(),
             fileName,
-            url,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            url
         );
     }
+#pragma warning disable CS8618
+    private FileRecord() { }
+#pragma warning restore CS8618
 }

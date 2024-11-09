@@ -11,6 +11,8 @@ public class LegalRepresentative : Entity<LegalRepresentativeId>
     public string Email { get; private set; }
     public string PhoneNumber { get; private set; }
     public string Address { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
     private LegalRepresentative(
         LegalRepresentativeId legalRepresentativeId,

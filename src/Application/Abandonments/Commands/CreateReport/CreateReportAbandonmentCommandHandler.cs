@@ -21,8 +21,6 @@ public sealed class CreateReportAbandonmentCommandHandler(
 {
     public async Task<ErrorOr<ReportAbandonment>> Handle(CreateReportAbandonmentCommand request, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
-
         //Validations
         if (Location.Create(
             request.Location.Latitude,
@@ -72,7 +70,7 @@ public sealed class CreateReportAbandonmentCommandHandler(
             reportAbandonment.SetFoundation(nearestFoundation.Id);
 
         //Persistent Report
-        abandonmentRepository.Add(reportAbandonment);
+        await abandonmentRepository.AddAsync(reportAbandonment);
 
         //return Report Abandonment
         return reportAbandonment;

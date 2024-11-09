@@ -45,7 +45,7 @@ internal sealed class RegisterCommandHandler(
                 : null
         );
 
-        userRepository.Add(user);
+        await userRepository.AddAsync(user);
 
         var token = jwtTokenGenerator.GenerateToken(user);
 
