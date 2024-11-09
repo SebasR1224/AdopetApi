@@ -7,7 +7,7 @@ public record CreateReportAbandonmentRequest(
     string Description,
     List<string> Images,
     ReporterRequest Reporter,
-    IReadOnlyCollection<AnimalRequest> Animals,
+    List<AnimalRequest> Animals,
     LocationRequest Location,
     DateTime AbandonmentDateTime,
     string AbandonmentStatus

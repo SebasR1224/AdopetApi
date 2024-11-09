@@ -11,6 +11,7 @@ namespace Domain.Abandonments;
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
     private readonly List<DomainFile> _images = [];
+    private readonly List<Animal> _animals = [];
     public string Title { get; private set; }
     public string Description { get; private set; }
     public ReportStatus Status { get; private set; }
@@ -26,7 +27,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
     public DateTime UpdateDateTime { get; private set; }
     public FoundationId? FoundationId { get; private set; }
 
-    public IReadOnlyCollection<Animal> Animals { get; private set; }
+    public IReadOnlyList<Animal> Animals => _animals.AsReadOnly();
 
     public IReadOnlyCollection<DomainFile> Images => _images.AsReadOnly();
 
@@ -39,7 +40,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
         Reporter reporter,
-        IReadOnlyCollection<Animal> animals
+        List<Animal> animals
     ) : base(reportAbandonmentId)
     {
         Title = title;
@@ -49,7 +50,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         AbandonmentDateTime = abandonmentDateTime;
         AbandonmentStatus = abandonmentStatus;
         Reporter = reporter;
-        Animals = animals;
+        _animals = animals;
     }
 
     public static ReportAbandonment Create(
@@ -59,7 +60,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
         Reporter reporter,
-        IReadOnlyCollection<Animal> animals
+        List<Animal> animals
     )
     {
         return new ReportAbandonment(
@@ -101,13 +102,14 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public void AddImage(string url)
     {
-        var file = DomainFile.Create(
+        var image = DomainFile.Create(
             url,
             nameof(ReportAbandonment),
             Id.Value
         );
 
-        _images.Add(file);
+        _images.Add(image);
+        UpdateDateTime = DateTime.UtcNow;
     }
 
     public void AddImages(List<string> images)

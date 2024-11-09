@@ -3,9 +3,8 @@ using Domain.Primitives;
 
 namespace Domain.Users;
 
-public sealed class User
+public sealed class User : AggregateRoot<UserId>
 {
-    public Guid Id { get; }
     public string Name { get; }
     public string LastName { get; }
     public string FullName => $"{Name} {LastName}";
@@ -23,7 +22,7 @@ public sealed class User
     public FoundationId? FoundationId { get; }
 
     private User(
-        Guid id,
+        UserId id,
         string name,
         string lastName,
         string personalId,
@@ -37,9 +36,8 @@ public sealed class User
         FoundationId? foundationId,
         DateTime createdDateTime,
         DateTime updatedDateTime
-    )
+    ) : base(id)
     {
-        Id = id;
         Name = name;
         LastName = lastName;
         PersonalId = personalId;
@@ -69,7 +67,7 @@ public sealed class User
     )
     {
         return new User(
-            Guid.NewGuid(),
+            UserId.CreateUnique(),
             name,
             lastName,
             personalId,
@@ -85,4 +83,9 @@ public sealed class User
             DateTime.UtcNow
         );
     }
+
+
+#pragma warning disable CS8618
+    private User() { }
+#pragma warning restore CS8618
 }

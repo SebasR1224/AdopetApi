@@ -8,6 +8,8 @@ public class ReporterConfiguration : IEntityTypeConfiguration<Reporter>
 {
     public void Configure(EntityTypeBuilder<Reporter> builder)
     {
+        builder.ToTable("Reporters");
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)

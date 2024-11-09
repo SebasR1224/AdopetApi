@@ -1,6 +1,7 @@
 using Domain.Abandonments;
 using Domain.Abandonments.Enums;
 using Domain.Abandonments.ValueObjects;
+using Domain.Foundations;
 using Domain.Foundations.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,11 +11,6 @@ namespace Infrastructure.Persistence.Configurations;
 public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAbandonment>
 {
     public void Configure(EntityTypeBuilder<ReportAbandonment> builder)
-    {
-        ConfigureReportAbandonment(builder);
-    }
-
-    private static void ConfigureReportAbandonment(EntityTypeBuilder<ReportAbandonment> builder)
     {
         builder.ToTable("ReportAbandonments");
 
@@ -65,5 +61,17 @@ public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAba
                 id => id!.Value,
                 value => FoundationId.Create(value)
             ).IsRequired(false);
+
+        builder.HasOne<Foundation>()
+            .WithMany()
+            .HasForeignKey(a => a.FoundationId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Ignore(r => r.Images);
+
+
+        builder.Metadata.FindNavigation(nameof(ReportAbandonment.Animals))!
+          .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

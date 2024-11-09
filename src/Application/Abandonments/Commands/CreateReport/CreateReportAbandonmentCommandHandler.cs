@@ -31,14 +31,10 @@ public sealed class CreateReportAbandonmentCommandHandler(
             request.Location.City,
             request.Location.PostalCode
         ) is not Location location)
-        {
             return Errors.ReportAbandonment.LocationWithBadFormat;
-        }
 
-        if (ConvertToAbandonmentStatus(request.AbandonmentStatus) is not AbandonmentStatus abandonmentStatus)
-        {
+        if (EnumHelper.ConvertToEnum<AbandonmentStatus>(request.AbandonmentStatus) is not AbandonmentStatus abandonmentStatus)
             return Errors.ReportAbandonment.InvalidAbandonmentStatus;
-        }
 
         //Create Report Abandonment
         var reportAbandonment = ReportAbandonment.Create(
@@ -54,7 +50,7 @@ public sealed class CreateReportAbandonmentCommandHandler(
                 request.Reporter.PhoneNumber,
                 request.Reporter.IsAnonymous
             ),
-            request.Animals.Select(animal => Animal.Create(
+            request.Animals.ConvertAll(animal => Animal.Create(
                 animal.Name,
                 animal.Description,
                 animal.Image,
@@ -63,34 +59,22 @@ public sealed class CreateReportAbandonmentCommandHandler(
                 animal.Weight,
                 animal.Specie,
                 animal.Breed,
-                EnumHelper.ConvertToEnum<AnimalGender>(animal.Gender) ?? AnimalGender.Unknown,
-                null
-            )).ToList()
+                EnumHelper.ConvertToEnum<AnimalGender>(animal.Gender) ?? AnimalGender.Unknown
+            ))
         );
 
         reportAbandonment.AddImages(request.Images);
 
-        //Persistent Report
         var foundations = await foundationRepository.GetByCityNameAsync(location.City);
         var nearestFoundation = locationService.FindNearestFoundation(reportAbandonment, foundations);
 
         if (nearestFoundation is not null)
-        {
             reportAbandonment.SetFoundation(nearestFoundation.Id);
-        }
 
+        //Persistent Report
         abandonmentRepository.Add(reportAbandonment);
 
         //return Report Abandonment
         return reportAbandonment;
-    }
-
-    public static AbandonmentStatus? ConvertToAbandonmentStatus(string status)
-    {
-        if (Enum.TryParse<AbandonmentStatus>(status, true, out var result))
-        {
-            return result;
-        }
-        return null;
     }
 }

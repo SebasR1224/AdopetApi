@@ -33,10 +33,7 @@ public sealed class Animal : AggregateRoot<AnimalId>
         Specie specie,
         Breed? breed,
         AnimalStatus status,
-        AnimalGender gender,
-        FoundationId? foundationId,
-        DateTime createdDateTime,
-        DateTime updatedDateTime)
+        AnimalGender gender)
        : base(animalId)
     {
         Name = name;
@@ -49,9 +46,6 @@ public sealed class Animal : AggregateRoot<AnimalId>
         Breed = breed;
         Status = status;
         Gender = gender;
-        FoundationId = foundationId;
-        CreateDateTime = createdDateTime;
-        UpdateDateTime = updatedDateTime;
     }
 
     public static Animal Create(
@@ -63,8 +57,7 @@ public sealed class Animal : AggregateRoot<AnimalId>
         decimal? weight,
         string specie,
         string? breed,
-        AnimalGender gender,
-        FoundationId? foundationId
+        AnimalGender gender
     )
     {
         return new Animal(
@@ -78,10 +71,7 @@ public sealed class Animal : AggregateRoot<AnimalId>
             Specie.Create(specie),
             Breed.Create(breed),
             AnimalStatus.Abandoned,
-            gender,
-            foundationId,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            gender
         );
     }
 

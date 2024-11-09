@@ -1,5 +1,6 @@
 using Application.Authentication.Common;
 using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Domain.Common.Errors;
 using Domain.Users;
@@ -8,14 +9,17 @@ using MediatR;
 
 namespace Application.Authentication.Queries.Login;
 
-internal sealed class LoginQueryHandler(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator) : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
+internal sealed class LoginQueryHandler(
+    IUserRepository userRepository,
+    IJwtTokenGenerator jwtTokenGenerator,
+    IPasswordHasher passwordHasher) : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery command, CancellationToken cancellationToken)
     {
         if (await userRepository.GetByUsernameAsync(command.Username) is not User user)
             return Errors.Authentication.InvalidCredentials;
 
-        if (user.Password != command.Password)
+        if (!passwordHasher.VerifyPassword(command.Password, user.Password))
             return Errors.Authentication.InvalidCredentials;
 
         var token = jwtTokenGenerator.GenerateToken(user);

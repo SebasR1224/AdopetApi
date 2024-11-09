@@ -11,6 +11,8 @@ public sealed class UserId : ValueObject
         Value = value;
     }
 
+    public static UserId Create(Guid value) => new UserId(value);
+
     public static UserId CreateUnique() => new UserId(Guid.NewGuid());
 
     public override IEnumerable<object> GetEqualityComponents()

@@ -1,6 +1,7 @@
 using System.Text;
 using Amazon.S3;
 using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Application.Common.Interfaces.Upload;
@@ -9,6 +10,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.Location;
+using Infrastructure.Services.Password;
 using Infrastructure.Services.Upload.Aws;
 using Infrastructure.Services.Upload.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +61,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<ILocationService, LocationService>(); //TODO use google maps api
         return services;
     }

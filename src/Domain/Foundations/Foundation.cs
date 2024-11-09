@@ -88,4 +88,9 @@ public sealed class Foundation : AggregateRoot<FoundationId>
             legalRepresentatives
         );
     }
+
+
+#pragma warning disable CS8618
+    private Foundation() { }
+#pragma warning restore CS8618
 }

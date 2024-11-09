@@ -49,5 +49,7 @@ public class LegalRepresentative : Entity<LegalRepresentativeId>
             address
         );
     }
-
+#pragma warning disable CS8618
+    private LegalRepresentative() { }
+#pragma warning restore CS8618
 }

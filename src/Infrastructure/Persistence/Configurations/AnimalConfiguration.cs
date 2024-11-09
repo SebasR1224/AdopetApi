@@ -2,6 +2,7 @@ using Domain.Animals;
 using Domain.Animals.Entities;
 using Domain.Animals.Enums;
 using Domain.Animals.ValueObjects;
+using Domain.Foundations;
 using Domain.Foundations.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,11 +12,6 @@ namespace Infrastructure.Persistence.Configurations;
 public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
 {
     public void Configure(EntityTypeBuilder<Animal> builder)
-    {
-        ConfigureAnimal(builder);
-    }
-
-    private static void ConfigureAnimal(EntityTypeBuilder<Animal> builder)
     {
         builder.ToTable("Animals");
 
@@ -81,5 +77,11 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
                 id => id!.Value,
                 value => FoundationId.Create(value)
             ).IsRequired(false);
+
+        builder.HasOne<Foundation>()
+            .WithMany()
+            .HasForeignKey(a => a.FoundationId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

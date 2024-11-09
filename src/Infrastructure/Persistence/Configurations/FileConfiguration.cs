@@ -10,7 +10,7 @@ public class ImageConfiguration : IEntityTypeConfiguration<DomainFile>
 {
     public void Configure(EntityTypeBuilder<DomainFile> builder)
     {
-        builder.ToTable("Images");
+        builder.ToTable("Files");
 
         builder.HasKey(x => x.Id);
 
@@ -21,16 +21,13 @@ public class ImageConfiguration : IEntityTypeConfiguration<DomainFile>
                 value => FileId.Create(value));
 
         builder.Property(x => x.Url)
-            .HasMaxLength(2048)
-            .IsRequired();
+            .HasMaxLength(2048);
 
         builder.Property(x => x.FileableType)
-            .HasMaxLength(255)
-            .IsRequired();
+            .HasMaxLength(255);
 
         builder.Property(x => x.FileableId)
-            .HasMaxLength(255)
-            .IsRequired();
+            .HasMaxLength(255);
 
         builder.HasIndex(x => new { x.FileableType, x.FileableId });
     }

@@ -1,5 +1,6 @@
 using Application.Authentication.Common;
 using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Domain.Common.Errors;
 using Domain.Foundations.ValueObjects;
@@ -12,7 +13,8 @@ namespace Application.Authentication.Commands.Register;
 internal sealed class RegisterCommandHandler(
     IUserRepository userRepository,
     IFoundationRepository foundationRepository,
-    IJwtTokenGenerator jwtTokenGenerator) : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+    IJwtTokenGenerator jwtTokenGenerator,
+    IPasswordHasher passwordHasher) : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
@@ -26,6 +28,8 @@ internal sealed class RegisterCommandHandler(
                 return Errors.User.FoundationNotFound;
         }
 
+        var hashedPassword = passwordHasher.HashPassword(command.Password);
+
         var user = User.Create(
             command.Name,
             command.LastName,
@@ -35,7 +39,7 @@ internal sealed class RegisterCommandHandler(
             command.Address,
             command.Email,
             command.Username,
-            command.Password,
+            hashedPassword,
             command.FoundationId.HasValue
                 ? FoundationId.Create(command.FoundationId.Value)
                 : null

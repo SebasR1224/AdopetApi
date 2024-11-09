@@ -10,7 +10,7 @@ public record CreateReportAbandonmentCommand(
     string Description,
     List<string> Images,
     ReporterCommand Reporter,
-    IReadOnlyCollection<AnimalCommand> Animals,
+    List<AnimalCommand> Animals,
     LocationCommand Location,
     DateTime AbandonmentDateTime,
     string AbandonmentStatus
