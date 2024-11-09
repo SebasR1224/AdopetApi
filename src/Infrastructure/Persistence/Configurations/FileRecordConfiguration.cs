@@ -24,11 +24,11 @@ public class FileRecordConfiguration : IEntityTypeConfiguration<FileRecord>
             .IsRequired();
 
         builder.Property(fr => fr.Url)
-            .HasMaxLength(255)
+            .HasMaxLength(2048)
             .IsRequired();
 
         builder.Property(f => f.CreatedDateTime)
-        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.Property(f => f.UpdatedDateTime)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");

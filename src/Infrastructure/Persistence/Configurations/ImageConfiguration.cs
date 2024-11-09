@@ -1,16 +1,17 @@
-using Domain.Files.ValueObjects;
+using Domain.Images;
+using Domain.Images.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using DomainFile = Domain.Files.File;
+
 
 namespace Infrastructure.Persistence.Configurations;
 
 
-public class ImageConfiguration : IEntityTypeConfiguration<DomainFile>
+public class ImageConfiguration : IEntityTypeConfiguration<Image>
 {
-    public void Configure(EntityTypeBuilder<DomainFile> builder)
+    public void Configure(EntityTypeBuilder<Image> builder)
     {
-        builder.ToTable("Files");
+        builder.ToTable("Images");
 
         builder.HasKey(f => f.Id);
 
@@ -18,18 +19,18 @@ public class ImageConfiguration : IEntityTypeConfiguration<DomainFile>
             .ValueGeneratedNever()
             .HasConversion(
                 id => id.Value,
-                value => FileId.Create(value));
+                value => ImageId.Create(value));
 
         builder.Property(f => f.Url)
             .HasMaxLength(2048);
 
-        builder.Property(f => f.FileableType)
+        builder.Property(f => f.ImageableType)
             .HasMaxLength(255);
 
-        builder.Property(f => f.FileableId)
+        builder.Property(f => f.ImageableId)
             .HasMaxLength(255);
 
-        builder.HasIndex(f => new { f.FileableType, f.FileableId });
+        builder.HasIndex(f => new { f.ImageableType, f.ImageableId });
 
         builder.Property(f => f.CreatedDateTime)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");

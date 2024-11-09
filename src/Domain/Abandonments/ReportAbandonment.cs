@@ -4,13 +4,13 @@ using Domain.Abandonments.ValueObjects;
 using Domain.Animals;
 using Domain.Common.ValueObjects;
 using Domain.Foundations.ValueObjects;
+using Domain.Images;
 using Domain.Primitives;
-using DomainFile = Domain.Files.File;
 namespace Domain.Abandonments;
 
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
-    private readonly List<DomainFile> _images = [];
+    private readonly List<Image> _images = [];
     private readonly List<Animal> _animals = [];
     public string Title { get; private set; }
     public string Description { get; private set; }
@@ -29,7 +29,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public IReadOnlyList<Animal> Animals => _animals.AsReadOnly();
 
-    public IReadOnlyCollection<DomainFile> Images => _images.AsReadOnly();
+    public IReadOnlyCollection<Image> Images => _images.AsReadOnly();
 
     private ReportAbandonment(
         ReportAbandonmentId reportAbandonmentId,
@@ -102,7 +102,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public void AddImage(string url)
     {
-        var image = DomainFile.Create(
+        var image = Image.Create(
             url,
             nameof(ReportAbandonment),
             Id.Value

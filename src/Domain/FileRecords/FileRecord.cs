@@ -5,10 +5,10 @@ namespace Domain.FileRecords;
 
 public class FileRecord : AggregateRoot<FileRecordId>
 {
-    public string FileName { get; }
-    public string Url { get; }
-    public DateTime CreatedDateTime { get; }
-    public DateTime UpdatedDateTime { get; }
+    public string FileName { get; private set; }
+    public string Url { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
     private FileRecord(
         FileRecordId id,

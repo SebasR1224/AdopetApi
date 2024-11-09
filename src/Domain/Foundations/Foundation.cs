@@ -2,6 +2,7 @@ using Domain.Common.ValueObjects;
 using Domain.Foundations.Entities;
 using Domain.Foundations.Enums;
 using Domain.Foundations.ValueObjects;
+using Domain.Images;
 using Domain.Primitives;
 
 namespace Domain.Foundations;
@@ -11,7 +12,7 @@ public sealed class Foundation : AggregateRoot<FoundationId>
     private readonly List<LegalRepresentative> _legalRepresentatives = [];
     public string Name { get; private set; }
     public string LegalName { get; private set; }
-    public string? Logo { get; private set; }
+    public Image? Logo { get; private set; }
     public string Description { get; set; }
     public string Nit { get; private set; }
     public Location Location { get; private set; }
@@ -32,7 +33,6 @@ public sealed class Foundation : AggregateRoot<FoundationId>
         FoundationId foundationId,
         string name,
         string legalName,
-        string? logo,
         string description,
         string nit,
         Location location,
@@ -50,7 +50,6 @@ public sealed class Foundation : AggregateRoot<FoundationId>
     {
         Name = name;
         LegalName = legalName;
-        Logo = logo;
         Description = description;
         Nit = nit;
         Location = location;
@@ -67,7 +66,6 @@ public sealed class Foundation : AggregateRoot<FoundationId>
     public static Foundation Create(
         string name,
         string legalName,
-        string? logo,
         string description,
         string nit,
         Location location,
@@ -83,7 +81,6 @@ public sealed class Foundation : AggregateRoot<FoundationId>
             FoundationId.CreateUnique(),
             name,
             legalName,
-            logo,
             description,
             nit,
             location,
@@ -97,6 +94,16 @@ public sealed class Foundation : AggregateRoot<FoundationId>
             true,
             legalRepresentatives
         );
+    }
+
+    public void AddLogo(string url)
+    {
+        Logo = Image.Create(
+            url,
+            nameof(Foundation),
+            Id.Value
+        );
+        UpdatedDateTime = DateTime.UtcNow;
     }
 
 

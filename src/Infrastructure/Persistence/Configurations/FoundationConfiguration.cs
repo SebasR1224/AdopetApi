@@ -33,9 +33,7 @@ public class FoundationConfiguration : IEntityTypeConfiguration<Foundation>
         builder.Property(f => f.LegalName)
             .HasMaxLength(100);
 
-        builder.Property(f => f.Logo)
-            .HasMaxLength(255)
-            .IsRequired(false);
+        builder.Ignore(f => f.Logo);
 
         builder.Property(f => f.Description)
             .HasColumnType("text");

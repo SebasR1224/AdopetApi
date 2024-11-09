@@ -28,7 +28,6 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
         var foundation = Foundation.Create(
             name: request.Name,
             legalName: request.LegalName,
-            logo: request.Logo,
             description: request.Description,
             nit: request.Nit,
             location: location,
@@ -46,6 +45,9 @@ public class CreateFoundationCommandHandler(IFoundationRepository foundationRepo
                 lr.Address
             ))
         );
+
+        if (request.Logo is not null)
+            foundation.AddLogo(request.Logo);
 
         //Persistence Foundation
         await foundationRepository.AddAsync(foundation);
