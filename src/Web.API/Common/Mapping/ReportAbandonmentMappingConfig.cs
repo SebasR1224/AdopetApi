@@ -25,7 +25,8 @@ public class ReportAbandonmentMappingConfig : IRegister
             .Map(dest => dest.Images, src => src.Images.Select(image => image.Url).ToList());
 
         config.NewConfig<Animal, AnimalResponse>()
-            .Map(dest => dest.Id, src => src.Id.Value);
+            .Map(dest => dest.Id, src => src.Id.Value)
+            .Map(dest => dest.Images, src => src.Images.Select(image => image.Url).ToList());
 
         config.NewConfig<Reporter, ReporterResponse>()
             .Map(dest => dest.Id, src => src.Id.Value);

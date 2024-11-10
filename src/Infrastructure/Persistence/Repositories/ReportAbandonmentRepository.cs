@@ -37,7 +37,11 @@ public class ReportAbandonmentRepository(ApplicationDbContext context) : IReport
 
     public async Task<ReportAbandonment?> GetByIdAsync(ReportAbandonmentId reportAbandonmentId)
     {
-        return await context.ReportAbandonments.FirstOrDefaultAsync(r => r.Id == reportAbandonmentId);
+        return await context.ReportAbandonments
+            .Include(r => r.Animals)
+            .Include(r => r.Images)
+            .Include(r => r.Reporter)
+            .FirstOrDefaultAsync(r => r.Id == reportAbandonmentId);
     }
 
     public async Task UpdateAsync(ReportAbandonment reportAbandonment)

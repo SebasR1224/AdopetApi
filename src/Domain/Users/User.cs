@@ -7,6 +7,7 @@ public sealed class User : AggregateRoot<UserId>
 {
     public string Name { get; private set; }
     public string LastName { get; private set; }
+    public string? ProfilePicture { get; private set; }
     public string FullName => $"{Name} {LastName}";
     public string PersonalId { get; private set; }
     public DateOnly BirthDate { get; private set; }
@@ -76,6 +77,12 @@ public sealed class User : AggregateRoot<UserId>
             true,
             foundationId
         );
+    }
+
+    public void AddProfilePicture(string url)
+    {
+        ProfilePicture = url;
+        UpdatedDateTime = DateTime.UtcNow;
     }
 
 

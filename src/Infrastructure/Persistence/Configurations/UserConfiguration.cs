@@ -26,6 +26,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.LastName)
             .HasMaxLength(100);
 
+        builder.Property(u => u.ProfilePicture)
+            .HasMaxLength(2048)
+            .IsRequired(false);
+
         builder.Property(u => u.PersonalId)
             .HasMaxLength(20);
 

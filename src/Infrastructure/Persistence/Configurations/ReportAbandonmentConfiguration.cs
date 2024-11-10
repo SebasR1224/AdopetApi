@@ -12,6 +12,12 @@ public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAba
 {
     public void Configure(EntityTypeBuilder<ReportAbandonment> builder)
     {
+        ConfigureReportAbandonment(builder);
+        ConfigureReportAbandonmentImage(builder);
+    }
+
+    private static void ConfigureReportAbandonment(EntityTypeBuilder<ReportAbandonment> builder)
+    {
         builder.ToTable("ReportAbandonments");
 
         builder.HasKey(r => r.Id);
@@ -62,13 +68,6 @@ public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAba
                 value => FoundationId.Create(value)
             ).IsRequired(false);
 
-        builder.HasOne<Foundation>()
-            .WithMany()
-            .HasForeignKey(a => a.FoundationId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.Ignore(r => r.Images);
 
         builder.Property(r => r.CreatedDateTime)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -78,5 +77,29 @@ public class ReportAbandonmentConfiguration : IEntityTypeConfiguration<ReportAba
 
         builder.Metadata.FindNavigation(nameof(ReportAbandonment.Animals))!
           .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Metadata.FindNavigation(nameof(ReportAbandonment.Images))!
+          .SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+    private static void ConfigureReportAbandonmentImage(EntityTypeBuilder<ReportAbandonment> builder)
+    {
+        builder.OwnsMany(a => a.Images, ib =>
+        {
+            ib.ToTable("ReportAbandonmentImages");
+
+            ib.HasKey(i => i.Id);
+
+            ib.WithOwner()
+                .HasForeignKey("ReportAbandonmentId");
+
+            ib.Property(i => i.Id)
+                .ValueGeneratedNever()
+                .HasConversion(
+                    id => id.Value,
+                    value => ReportAbandonmentImageId.Create(value));
+
+            ib.Property(i => i.Url)
+                .HasMaxLength(2048);
+        });
     }
 }

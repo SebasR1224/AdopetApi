@@ -4,13 +4,12 @@ using Domain.Abandonments.ValueObjects;
 using Domain.Animals;
 using Domain.Common.ValueObjects;
 using Domain.Foundations.ValueObjects;
-using Domain.Images;
 using Domain.Primitives;
 namespace Domain.Abandonments;
 
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
-    private readonly List<Image> _images = [];
+    private readonly List<ReportAbandonmentImage> _images = [];
     private readonly List<Animal> _animals = [];
     public string Title { get; private set; }
     public string Description { get; private set; }
@@ -29,7 +28,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public IReadOnlyList<Animal> Animals => _animals.AsReadOnly();
 
-    public IReadOnlyCollection<Image> Images => _images.AsReadOnly();
+    public IReadOnlyCollection<ReportAbandonmentImage> Images => _images.AsReadOnly();
 
     private ReportAbandonment(
         ReportAbandonmentId reportAbandonmentId,
@@ -40,7 +39,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
         Reporter reporter,
-        List<Animal> animals
+        List<Animal> animals,
+        List<ReportAbandonmentImage> images
     ) : base(reportAbandonmentId)
     {
         Title = title;
@@ -51,6 +51,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         AbandonmentStatus = abandonmentStatus;
         Reporter = reporter;
         _animals = animals;
+        _images = images;
     }
 
     public static ReportAbandonment Create(
@@ -60,7 +61,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
         Reporter reporter,
-        List<Animal> animals
+        List<Animal> animals,
+        List<ReportAbandonmentImage> images
     )
     {
         return new ReportAbandonment(
@@ -72,7 +74,8 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
             abandonmentDateTime,
             abandonmentStatus,
             reporter,
-            animals
+            animals,
+            images
         );
     }
 
@@ -102,22 +105,7 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
     public void AddImage(string url)
     {
-        var image = Image.Create(
-            url,
-            nameof(ReportAbandonment),
-            Id.Value
-        );
-
-        _images.Add(image);
-        UpdatedDateTime = DateTime.UtcNow;
-    }
-
-    public void AddImages(List<string> images)
-    {
-        foreach (var image in images)
-        {
-            AddImage(image);
-        }
+        _images.Add(ReportAbandonmentImage.Create(url));
     }
 
 #pragma warning disable CS8618

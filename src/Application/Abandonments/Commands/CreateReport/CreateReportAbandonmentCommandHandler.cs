@@ -58,10 +58,10 @@ public sealed class CreateReportAbandonmentCommandHandler(
                 animal.Specie,
                 animal.Breed,
                 EnumHelper.ConvertToEnum<AnimalGender>(animal.Gender) ?? AnimalGender.Unknown
-            ))
+            )),
+            request.Images.ConvertAll(ReportAbandonmentImage.Create)
         );
 
-        reportAbandonment.AddImages(request.Images);
 
         var foundations = await foundationRepository.GetByCityNameAsync(location.City);
         var nearestFoundation = locationService.FindNearestFoundation(reportAbandonment, foundations);

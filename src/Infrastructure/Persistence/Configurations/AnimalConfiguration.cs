@@ -13,6 +13,12 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
 {
     public void Configure(EntityTypeBuilder<Animal> builder)
     {
+        ConfigureAnimal(builder);
+        ConfigureAnimalImage(builder);
+    }
+
+    private static void ConfigureAnimal(EntityTypeBuilder<Animal> builder)
+    {
         builder.ToTable("Animals");
 
         builder.HasKey(a => a.Id);
@@ -28,9 +34,6 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
 
         builder.Property(a => a.Description)
                 .HasColumnType("text");
-
-        builder.Property(a => a.Image)
-                .HasMaxLength(255);
 
         builder.Property(a => a.Age)
                 .HasColumnType("integer")
@@ -81,5 +84,33 @@ public class AnimalConfiguration : IEntityTypeConfiguration<Animal>
 
         builder.Property(a => a.UpdatedDateTime)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Metadata.FindNavigation(nameof(Animal.Images))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Metadata.FindNavigation(nameof(Animal.Images))!
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    private static void ConfigureAnimalImage(EntityTypeBuilder<Animal> builder)
+    {
+        builder.OwnsMany(a => a.Images, ib =>
+        {
+            ib.ToTable("AnimalImages");
+
+            ib.HasKey(i => i.Id);
+
+            ib.WithOwner()
+                .HasForeignKey("AnimalId");
+
+            ib.Property(i => i.Id)
+                .ValueGeneratedNever()
+                .HasConversion(
+                    id => id.Value,
+                    value => AnimalImageId.Create(value));
+
+            ib.Property(i => i.Url)
+                .HasMaxLength(2048);
+        });
     }
 }

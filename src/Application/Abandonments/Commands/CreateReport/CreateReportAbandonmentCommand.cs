@@ -26,7 +26,7 @@ public record ReporterCommand(
 
 public record AnimalCommand(
     string Name,
-    string Image,
+    string? Image,
     string Description,
     int? Age,
     string CoatColor,

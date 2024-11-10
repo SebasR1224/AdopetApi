@@ -4,7 +4,7 @@ namespace Contracts.Foundation;
 
 public record CreateFoundationRequest(
     string Name,
-    string LastName,
+    string LegalName,
     string? Logo,
     string Description,
     string Nit,

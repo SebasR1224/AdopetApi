@@ -28,11 +28,7 @@ var app = builder.Build();
     app.UseAuthorization();
     app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     app.MapControllers();
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
-        RequestPath = "/public"
-    }); //TODO remove after development
+
     app.Run();
 };
 

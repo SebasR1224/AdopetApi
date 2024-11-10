@@ -29,7 +29,7 @@ public record AnimalResponse(
     Guid Id,
     string Name,
     string Description,
-    string Image,
+    List<string> Images,
     string Specie,
     string Age,
     string Gender,

@@ -30,10 +30,10 @@ public class FoundationConfiguration : IEntityTypeConfiguration<Foundation>
         builder.Property(f => f.Name)
             .HasMaxLength(100);
 
+        builder.Ignore(f => f.Logo);
+
         builder.Property(f => f.LegalName)
             .HasMaxLength(100);
-
-        builder.Ignore(f => f.Logo);
 
         builder.Property(f => f.Description)
             .HasColumnType("text");
