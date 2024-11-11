@@ -1,10 +1,12 @@
 using Domain.Foundations.ValueObjects;
 using Domain.Primitives;
+using Domain.Users.Events;
 
 namespace Domain.Users;
 
 public sealed class User : AggregateRoot<UserId>
 {
+    private readonly int _emailVerificationTokenExpiryHours = 24;
     public string Name { get; private set; }
     public string LastName { get; private set; }
     public string? ProfilePicture { get; private set; }
@@ -17,6 +19,9 @@ public sealed class User : AggregateRoot<UserId>
     public string Username { get; private set; }
     public string Password { get; private set; }
     public bool IsActive { get; private set; }
+    public bool IsEmailVerified { get; private set; }
+    public string EmailVerificationToken { get; private set; }
+    public DateTime EmailVerificationTokenExpiry { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
     public DateTime UpdatedDateTime { get; private set; }
 
@@ -34,6 +39,7 @@ public sealed class User : AggregateRoot<UserId>
         string username,
         string password,
         bool isActive,
+        string emailVerificationToken,
         FoundationId? foundationId
     ) : base(id)
     {
@@ -47,6 +53,8 @@ public sealed class User : AggregateRoot<UserId>
         Username = username;
         Password = password;
         IsActive = isActive;
+        EmailVerificationToken = emailVerificationToken;
+        EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(_emailVerificationTokenExpiryHours);
         FoundationId = foundationId;
     }
 
@@ -63,7 +71,7 @@ public sealed class User : AggregateRoot<UserId>
         FoundationId? foundationId
     )
     {
-        return new User(
+        var user = new User(
             UserId.CreateUnique(),
             name,
             lastName,
@@ -75,8 +83,16 @@ public sealed class User : AggregateRoot<UserId>
             username,
             password,
             true,
+            Guid.NewGuid().ToString(),
             foundationId
         );
+
+        user.AddDomainEvent(new EmailVerificationTokenGeneratedEvent(
+            user.Id,
+            user.Email,
+            user.EmailVerificationToken));
+
+        return user;
     }
 
     public void AddProfilePicture(string url)
@@ -84,7 +100,6 @@ public sealed class User : AggregateRoot<UserId>
         ProfilePicture = url;
         UpdatedDateTime = DateTime.UtcNow;
     }
-
 
 #pragma warning disable CS8618
     private User() { }

@@ -1,8 +1,8 @@
 using ErrorOr;
 using MediatR;
-using Application.Common.Interfaces.Upload;
 using Application.Common.Interfaces.Persistence;
 using Domain.FileRecords;
+using Application.Common.Interfaces.Services.Upload;
 
 namespace Application.FileRecords.Commands.UploadFile;
 

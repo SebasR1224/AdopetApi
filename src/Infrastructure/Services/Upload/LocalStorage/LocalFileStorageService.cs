@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Upload;
+using Application.Common.Interfaces.Services.Upload;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services.Upload.LocalStorage;

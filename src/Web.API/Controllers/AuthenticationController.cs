@@ -19,7 +19,7 @@ public class Authentication(ISender mediator, IMapper mapper) : ApiController
         var authenticationResult = await mediator.Send(command);
 
         return authenticationResult.Match(
-            auth => Ok(mapper.Map<AuthenticationResponse>(auth)),
+            _ => NoContent(),
             errors => Problem(errors)
         );
     }

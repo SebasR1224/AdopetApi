@@ -10,5 +10,9 @@ public partial class Errors
             code: "Auth.InvalidCredentials",
             description: "Invalid Credentials"
         );
+        public static Error EmailNotVerified => Error.Validation(
+            code: "Auth.EmailNotVerified",
+            description: "Email not verified"
+        );
     }
 }

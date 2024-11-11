@@ -4,11 +4,14 @@ using Application.Common.Interfaces.Authentication;
 using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
-using Application.Common.Interfaces.Upload;
+using Application.Common.Interfaces.Services.Email;
+using Application.Common.Interfaces.Services.Upload;
 using Infrastructure.Authentication;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Email;
 using Infrastructure.Services.Location;
 using Infrastructure.Services.Password;
 using Infrastructure.Services.Upload.Aws;
@@ -40,6 +43,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 
+        services.AddScoped<PublishDomainEventsInterceptor>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReportAbandonmentRepository, ReportAbandonmentRepository>();
         services.AddScoped<IFoundationRepository, FoundationRepository>();
@@ -63,6 +67,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<ILocationService, LocationService>(); //TODO use google maps api
+        services.AddSingleton<IEmailService, EmailService>();
+
         return services;
     }
 

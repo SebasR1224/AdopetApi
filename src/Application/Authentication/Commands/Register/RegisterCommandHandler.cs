@@ -1,5 +1,3 @@
-using Application.Authentication.Common;
-using Application.Common.Interfaces.Authentication;
 using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Domain.Common.Errors;
@@ -13,10 +11,9 @@ namespace Application.Authentication.Commands.Register;
 internal sealed class RegisterCommandHandler(
     IUserRepository userRepository,
     IFoundationRepository foundationRepository,
-    IJwtTokenGenerator jwtTokenGenerator,
-    IPasswordHasher passwordHasher) : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+    IPasswordHasher passwordHasher) : IRequestHandler<RegisterCommand, ErrorOr<Unit>>
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Unit>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         if (await userRepository.GetByUsernameAsync(command.Username) is not null)
             return Errors.User.DuplicateUsername;
@@ -47,8 +44,6 @@ internal sealed class RegisterCommandHandler(
 
         await userRepository.AddAsync(user);
 
-        var token = jwtTokenGenerator.GenerateToken(user);
-
-        return new AuthenticationResult(user, token);
+        return Unit.Value;
     }
 }

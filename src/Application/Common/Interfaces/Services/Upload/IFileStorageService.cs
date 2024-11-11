@@ -1,4 +1,4 @@
-namespace Application.Common.Interfaces.Upload;
+namespace Application.Common.Interfaces.Services.Upload;
 
 public interface IFileStorageService
 {

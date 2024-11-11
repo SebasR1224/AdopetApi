@@ -54,6 +54,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsActive)
             .HasDefaultValue(true);
 
+        builder.Property(u => u.IsEmailVerified)
+            .HasDefaultValue(false);
+
         builder.HasOne<Foundation>()
            .WithMany()
            .HasForeignKey(a => a.FoundationId)

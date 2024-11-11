@@ -1,6 +1,6 @@
 using Amazon.S3;
 using Amazon.S3.Transfer;
-using Application.Common.Interfaces.Upload;
+using Application.Common.Interfaces.Services.Upload;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services.Upload.Aws;
