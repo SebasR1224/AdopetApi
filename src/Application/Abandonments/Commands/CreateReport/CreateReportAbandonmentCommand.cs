@@ -25,7 +25,7 @@ public record ReporterCommand(
 );
 
 public record AnimalCommand(
-    string Name,
+    string? Name,
     string? Image,
     string Description,
     int? Age,

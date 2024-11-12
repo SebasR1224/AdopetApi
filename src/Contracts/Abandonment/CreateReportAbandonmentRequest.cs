@@ -22,7 +22,7 @@ public record ReporterRequest(
 );
 
 public record AnimalRequest(
-    string Name,
+    string? Name,
     string? Image,
     string Description,
     int? Age,

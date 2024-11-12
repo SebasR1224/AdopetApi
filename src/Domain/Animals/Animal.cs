@@ -49,7 +49,7 @@ public sealed class Animal : AggregateRoot<AnimalId>
     }
 
     public static Animal Create(
-        string name,
+        string? name,
         string description,
         string? image,
         int? age,
@@ -60,9 +60,10 @@ public sealed class Animal : AggregateRoot<AnimalId>
         AnimalGender gender
     )
     {
+
         var animal = new Animal(
             AnimalId.CreateUnique(),
-            name,
+            name ?? $"{specie} {coatColor}",
             description,
             age,
             coatColor,
