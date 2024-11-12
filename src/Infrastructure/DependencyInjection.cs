@@ -32,6 +32,7 @@ public static class DependencyInjection
         services
             .AddAuth(configuration)
             .AddPersistence(configuration)
+            .AddEmailServices(configuration)
             .AddUploadServices(configuration)
             .AddServices();
 
@@ -50,6 +51,15 @@ public static class DependencyInjection
         services.AddScoped<IAnimalRepository, AnimalRepository>();
         services.AddScoped<IFileRecordRepository, FileRecordRepository>();
 
+        return services;
+    }
+
+    private static IServiceCollection AddEmailServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var emailSettings = new EmailSettings();
+        configuration.Bind(EmailSettings.SectionName, emailSettings);
+
+        services.AddSingleton(Options.Create(emailSettings));
         return services;
     }
 

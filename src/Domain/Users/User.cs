@@ -90,6 +90,7 @@ public sealed class User : AggregateRoot<UserId>
         user.AddDomainEvent(new EmailVerificationTokenGeneratedEvent(
             user.Id,
             user.Email,
+            user.Username,
             user.EmailVerificationToken));
 
         return user;
@@ -98,6 +99,12 @@ public sealed class User : AggregateRoot<UserId>
     public void AddProfilePicture(string url)
     {
         ProfilePicture = url;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
+    public void VerifyEmail()
+    {
+        IsEmailVerified = true;
         UpdatedDateTime = DateTime.UtcNow;
     }
 

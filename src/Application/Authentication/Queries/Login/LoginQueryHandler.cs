@@ -22,8 +22,7 @@ internal sealed class LoginQueryHandler(
         if (!passwordHasher.VerifyPassword(command.Password, user.Password))
             return Errors.Authentication.InvalidCredentials;
 
-        //if (user.IsEmailVerified is false)
-        //return Errors.Authentication.EmailNotVerified;
+        if (!user.IsEmailVerified) return Errors.Authentication.EmailNotVerified;
 
         var token = jwtTokenGenerator.GenerateToken(user);
 

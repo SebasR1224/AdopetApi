@@ -14,5 +14,13 @@ public partial class Errors
             code: "Auth.EmailNotVerified",
             description: "Email not verified"
         );
+        public static Error EmailAlreadyVerified => Error.Conflict(
+            code: "Auth.EmailAlreadyVerified",
+            description: "Email already verified"
+        );
+        public static Error InvalidToken => Error.Validation(
+            code: "Auth.InvalidToken",
+            description: "Invalid token"
+        );
     }
 }
