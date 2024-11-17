@@ -2,6 +2,7 @@ using Domain.Abandonments;
 using Domain.Animals;
 using Domain.FileRecords;
 using Domain.Foundations;
+using Domain.PasswordRecovery;
 using Domain.Primitives;
 using Domain.Users;
 using Infrastructure.Persistence.Interceptors;
@@ -16,7 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<User> Users { get; set; }
     public DbSet<Foundation> Foundations { get; set; }
     public DbSet<FileRecord> FileRecords { get; set; }
-
+    public DbSet<PasswordRecoveryToken> PasswordRecoveryTokens { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder

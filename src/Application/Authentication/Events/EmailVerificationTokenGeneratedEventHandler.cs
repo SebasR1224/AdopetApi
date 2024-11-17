@@ -12,7 +12,7 @@ public sealed class EmailVerificationTokenGeneratedEventHandler(IEmailService em
     private readonly ApplicationConfiguration _configuration = configuration.Value;
     public async Task Handle(EmailVerificationTokenGeneratedEvent notification, CancellationToken cancellationToken)
     {
-        var emailBody = EmailTemplateModel.GetVerificationEmailTemplate(notification.Username, $"{_configuration.FrontendUrl}/verify-email?token={notification.Token}&userId={notification.UserId.Value}");
+        var emailBody = VerifyEmailTemplateModel.GetVerificationEmailTemplate(notification.Username, $"{_configuration.FrontendUrl}/verify-email?token={notification.Token}&userId={notification.UserId.Value}");
         await emailService.SendEmailAsync(notification.Email, "Verify Email", emailBody);
     }
 }

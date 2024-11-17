@@ -15,7 +15,7 @@ internal sealed class RegisterCommandHandler(
 {
     public async Task<ErrorOr<Unit>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        if (await userRepository.GetByUsernameAsync(command.Username) is not null)
+        if (await userRepository.GetByUsernameOrEmailAsync(command.Username) is not null)
             return Errors.User.DuplicateUsername;
 
         if (command.FoundationId != null)

@@ -50,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<IFoundationRepository, FoundationRepository>();
         services.AddScoped<IAnimalRepository, AnimalRepository>();
         services.AddScoped<IFileRecordRepository, FileRecordRepository>();
+        services.AddScoped<IPasswordRecoveryTokenRepository, PasswordRecoveryTokenRepository>();
 
         return services;
     }

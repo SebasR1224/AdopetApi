@@ -16,7 +16,7 @@ internal sealed class LoginQueryHandler(
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery command, CancellationToken cancellationToken)
     {
-        if (await userRepository.GetByUsernameAsync(command.Username) is not User user)
+        if (await userRepository.GetByUsernameOrEmailAsync(command.Username) is not User user)
             return Errors.Authentication.InvalidCredentials;
 
         if (!passwordHasher.VerifyPassword(command.Password, user.Password))

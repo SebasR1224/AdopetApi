@@ -1,6 +1,6 @@
 namespace Application.Common.Interfaces.Models;
 
-public static class EmailTemplateModel
+public static class VerifyEmailTemplateModel
 {
     public static string GetVerificationEmailTemplate(string userName, string verificationLink)
     {

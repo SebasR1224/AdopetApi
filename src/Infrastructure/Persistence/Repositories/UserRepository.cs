@@ -14,8 +14,8 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<User?> GetByUsernameAsync(string username)
-        => await context.Users.SingleOrDefaultAsync(x => x.Username == username);
+    public async Task<User?> GetByUsernameOrEmailAsync(string username)
+        => await context.Users.SingleOrDefaultAsync(x => x.Username == username || x.Email == username);
 
     public async Task UpdateAsync(User user)
     {
