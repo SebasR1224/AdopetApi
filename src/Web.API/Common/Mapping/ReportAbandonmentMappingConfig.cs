@@ -1,4 +1,3 @@
-using Application.Abandonments.Commands.CreateReport;
 using Application.Common.Commands;
 using Contracts.Abandonment;
 using Contracts.Common;
@@ -24,7 +23,7 @@ public class ReportAbandonmentMappingConfig : IRegister
             .Map(dest => dest.FoundationId, src => src.FoundationId!.Value)
             .Map(dest => dest.Images, src => src.Images.Select(image => image.Url).ToList());
 
-        config.NewConfig<Animal, AnimalResponse>()
+        config.NewConfig<Animal, AnimalReportAbandonmentResponse>()
             .Map(dest => dest.Id, src => src.Id.Value)
             .Map(dest => dest.Images, src => src.Images.Select(image => image.Url).ToList());
 

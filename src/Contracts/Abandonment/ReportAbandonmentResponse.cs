@@ -14,7 +14,7 @@ public record ReportAbandonmentResponse(
     DateTime? RescueDateTime,
     TimeSpan? ResponseTime,
     Guid? FoundationId,
-    List<AnimalResponse> Animals,
+    List<AnimalReportAbandonmentResponse> Animals,
     ReporterResponse Reporter
 );
 
@@ -25,7 +25,7 @@ public record ReporterResponse(
     string PhoneNumber
 );
 
-public record AnimalResponse(
+public record AnimalReportAbandonmentResponse(
     Guid Id,
     string Name,
     string Description,

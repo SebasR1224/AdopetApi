@@ -112,6 +112,8 @@ public class FoundationConfiguration : IEntityTypeConfiguration<Foundation>
                 .HasMaxLength(100)
                 .IsRequired();
 
+            lb.Ignore(lr => lr.FullName);
+
             lb.Property(lr => lr.PersonalId)
                 .HasMaxLength(20)
                 .IsRequired();

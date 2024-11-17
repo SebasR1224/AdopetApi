@@ -12,7 +12,7 @@ public record CreateReportAbandonmentCommand(
     ReporterCommand Reporter,
     List<AnimalCommand> Animals,
     LocationCommand Location,
-    DateTime AbandonmentDateTime,
+    DateTime? AbandonmentDateTime,
     string AbandonmentStatus
 ) : IRequest<ErrorOr<ReportAbandonment>>;
 

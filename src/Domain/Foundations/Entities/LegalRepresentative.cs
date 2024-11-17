@@ -7,6 +7,7 @@ public class LegalRepresentative : Entity<LegalRepresentativeId>
 {
     public string Name { get; private set; }
     public string LastName { get; private set; }
+    public string FullName => $"{Name} {LastName}";
     public string PersonalId { get; private set; }
     public string Email { get; private set; }
     public string PhoneNumber { get; private set; }

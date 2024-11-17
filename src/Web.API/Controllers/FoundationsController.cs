@@ -17,7 +17,7 @@ public class FoundationsController(IMapper mapper, ISender mediator) : ApiContro
     {
         var foundationsResult = await mediator.Send(new GetAllFoundationsQuery());
         return foundationsResult.Match(
-            foundations => Ok(foundations),
+            foundations => Ok(mapper.Map<List<FoundationResponse>>(foundations)),
             errors => Problem(errors)
         );
     }
@@ -32,7 +32,7 @@ public class FoundationsController(IMapper mapper, ISender mediator) : ApiContro
         var createFoundationResult = await mediator.Send(command);
 
         return createFoundationResult.Match(
-            response => Ok(response),
+            response => Ok(mapper.Map<FoundationResponse>(response)),
             errors => Problem(errors)
         );
     }
@@ -42,7 +42,7 @@ public class FoundationsController(IMapper mapper, ISender mediator) : ApiContro
     {
         var foundationResult = await mediator.Send(new GetFoundationByIdQuery(id));
         return foundationResult.Match(
-            response => Ok(response),
+            response => Ok(mapper.Map<FoundationResponse>(response)),
             errors => Problem(errors)
         );
     }

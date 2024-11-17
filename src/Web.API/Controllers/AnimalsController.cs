@@ -1,19 +1,21 @@
 using Application.Animals.Queries.GetAllAnimals;
 using Application.Animals.Queries.GetAnimalById;
+using Contracts.Animals;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Controllers;
 
 [Route("/api/animals")]
-public class AnimalsController(ISender mediator) : ApiController
+public class AnimalsController(ISender mediator, IMapper mapper) : ApiController
 {
     [HttpGet]
     public async Task<IActionResult> GetAllAnimals()
     {
         var animalsResult = await mediator.Send(new GetAllAnimalsQuery());
         return animalsResult.Match(
-            animals => Ok(animals),
+            animals => Ok(mapper.Map<List<AnimalResponse>>(animals)),
             errors => Problem(errors)
         );
     }
@@ -23,7 +25,7 @@ public class AnimalsController(ISender mediator) : ApiController
     {
         var animalResult = await mediator.Send(new GetAnimalByIdQuery(id));
         return animalResult.Match(
-            animal => Ok(animal),
+            animal => Ok(mapper.Map<AnimalResponse>(animal)),
             errors => Problem(errors)
         );
     }
