@@ -6,28 +6,44 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
     public RegisterCommandValidator()
     {
-        RuleFor(r => r.Name).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.PersonalId).NotEmpty().MaximumLength(20);
 
-        RuleFor(r => r.LastName)
+        RuleFor(x => x.BirthDate)
             .NotEmpty()
+            .Must(BeValidAge).WithMessage("You must be of legal age");
+
+        RuleFor(x => x.PhoneNumber).NotEmpty();
+
+        RuleFor(x => x.Address).NotEmpty().MaximumLength(200);
+
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
+
+        RuleFor(x => x.Username)
+            .NotEmpty()
+            .MinimumLength(3)
             .MaximumLength(50)
-            .WithName("Last Name");
+            .Matches("^[a-zA-Z0-9._-]+$").WithMessage("The username can only contain letters, numbers, dots, hyphens, and underscores");
 
-        RuleFor(r => r.PersonalId).NotEmpty().MaximumLength(20);
-
-        // RuleFor(r => r.BirthDate).NotEmpty().MaximumLength(20); //todo
-
-        RuleFor(r => r.PhoneNumber).NotEmpty().MaximumLength(20);
-
-        RuleFor(r => r.Address).NotEmpty().MaximumLength(255);
-
-        RuleFor(r => r.Email)
+        RuleFor(x => x.Password)
             .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(100);
+            .MinimumLength(8)
+            .Matches("[A-Z]").WithMessage("The password must contain at least one uppercase letter")
+            .Matches("[a-z]").WithMessage("The password must contain at least one lowercase letter")
+            .Matches("[0-9]").WithMessage("The password must contain at least one number")
+            .Matches("[^a-zA-Z0-9]").WithMessage("The password must contain at least one special character");
 
-        RuleFor(r => r.Username).NotEmpty().MaximumLength(30);
+    }
 
-        RuleFor(r => r.Password).NotEmpty().MaximumLength(30);
+    private bool BeValidAge(DateOnly birthDate)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var age = today.Year - birthDate.Year;
+
+        if (birthDate > today.AddYears(-age))
+            age--;
+
+        return age >= 18;
     }
 }
