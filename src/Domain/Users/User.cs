@@ -83,7 +83,7 @@ public sealed class User : AggregateRoot<UserId>
             username,
             password,
             true,
-            Guid.NewGuid().ToString(),
+            Guid.NewGuid().ToString("N"),
             foundationId
         );
 
@@ -105,6 +105,12 @@ public sealed class User : AggregateRoot<UserId>
     public void VerifyEmail()
     {
         IsEmailVerified = true;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
+    public void UpdatePassword(string hashedPassword)
+    {
+        Password = hashedPassword;
         UpdatedDateTime = DateTime.UtcNow;
     }
 
