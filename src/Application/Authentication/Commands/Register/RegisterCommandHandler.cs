@@ -1,5 +1,4 @@
-using Application.Authentication.Common;
-using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Domain.Common.Errors;
 using Domain.Foundations.ValueObjects;
@@ -12,11 +11,11 @@ namespace Application.Authentication.Commands.Register;
 internal sealed class RegisterCommandHandler(
     IUserRepository userRepository,
     IFoundationRepository foundationRepository,
-    IJwtTokenGenerator jwtTokenGenerator) : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+    IPasswordHasher passwordHasher) : IRequestHandler<RegisterCommand, ErrorOr<Unit>>
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Unit>> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        if (await userRepository.GetByUsernameAsync(command.Username) is not null)
+        if (await userRepository.GetByUsernameOrEmailAsync(command.Username) is not null)
             return Errors.User.DuplicateUsername;
 
         if (command.FoundationId != null)
@@ -25,6 +24,8 @@ internal sealed class RegisterCommandHandler(
             if (await foundationRepository.GetByIdAsync(foundationId) is null)
                 return Errors.User.FoundationNotFound;
         }
+
+        var hashedPassword = passwordHasher.HashPassword(command.Password);
 
         var user = User.Create(
             command.Name,
@@ -35,16 +36,14 @@ internal sealed class RegisterCommandHandler(
             command.Address,
             command.Email,
             command.Username,
-            command.Password,
+            hashedPassword,
             command.FoundationId.HasValue
                 ? FoundationId.Create(command.FoundationId.Value)
                 : null
         );
 
-        userRepository.Add(user);
+        await userRepository.AddAsync(user);
 
-        var token = jwtTokenGenerator.GenerateToken(user);
-
-        return new AuthenticationResult(user, token);
+        return Unit.Value;
     }
 }

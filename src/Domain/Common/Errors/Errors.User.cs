@@ -15,5 +15,9 @@ public partial class Errors
             "User.FoundationNotFound",
             "Foundation not found. Please check the ID and try again."
         );
+        public static Error NotFound => Error.NotFound(
+            "User.NotFound",
+            "User not found. Please check the ID and try again."
+        );
     }
 }

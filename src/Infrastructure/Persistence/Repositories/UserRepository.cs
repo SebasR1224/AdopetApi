@@ -1,17 +1,25 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
-    private static readonly List<User> _users = [];
+    public async Task<User?> GetByIdAsync(UserId id) => await context.Users.SingleOrDefaultAsync(x => x.Id == id);
 
-    public void Add(User user) => _users.Add(user);
-
-    public async Task<User?> GetByUsernameAsync(string username)
+    public async Task AddAsync(User user)
     {
-        await Task.CompletedTask;
-        return _users.SingleOrDefault(x => x.Username == username);
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetByUsernameOrEmailAsync(string username)
+        => await context.Users.SingleOrDefaultAsync(x => x.Username == username || x.Email == username);
+
+    public async Task UpdateAsync(User user)
+    {
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
     }
 }

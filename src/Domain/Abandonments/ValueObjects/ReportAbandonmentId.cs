@@ -20,4 +20,9 @@ public sealed class ReportAbandonmentId : ValueObject
     {
         yield return Value;
     }
+
+    public static ReportAbandonmentId Create(Guid reportAbandonmentId)
+    {
+        return new ReportAbandonmentId(reportAbandonmentId);
+    }
 }

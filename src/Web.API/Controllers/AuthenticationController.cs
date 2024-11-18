@@ -1,4 +1,5 @@
 using Application.Authentication.Commands.Register;
+using Application.Authentication.Commands.VerifyEmail;
 using Application.Authentication.Queries.Login;
 using Contracts.Authentication;
 using MapsterMapper;
@@ -19,7 +20,7 @@ public class Authentication(ISender mediator, IMapper mapper) : ApiController
         var authenticationResult = await mediator.Send(command);
 
         return authenticationResult.Match(
-            auth => Ok(mapper.Map<AuthenticationResponse>(auth)),
+            _ => NoContent(),
             errors => Problem(errors)
         );
     }
@@ -31,6 +32,18 @@ public class Authentication(ISender mediator, IMapper mapper) : ApiController
         var authenticationResult = await mediator.Send(query);
 
         return authenticationResult.Match(
+            auth => Ok(mapper.Map<AuthenticationResponse>(auth)),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail(VerifyEmailRequest request)
+    {
+        var command = mapper.Map<VerifyEmailCommand>(request);
+        var result = await mediator.Send(command);
+
+        return result.Match(
             auth => Ok(mapper.Map<AuthenticationResponse>(auth)),
             errors => Problem(errors)
         );

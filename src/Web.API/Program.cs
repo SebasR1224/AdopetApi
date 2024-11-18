@@ -1,6 +1,8 @@
 using Application;
 using Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using Web.API;
+using Web.API.Extensions;
 using Web.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddPresentation()
         .AddInfrastructure(builder.Configuration)
-        .AddApplication();
+        .AddApplication(builder.Configuration);
 }
 
 var app = builder.Build();
@@ -17,6 +19,7 @@ var app = builder.Build();
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.ApplyMigrations();
     }
 
     app.UseExceptionHandler("/error");
@@ -25,6 +28,7 @@ var app = builder.Build();
     app.UseAuthorization();
     app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     app.MapControllers();
+
     app.Run();
 };
 

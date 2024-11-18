@@ -1,82 +1,88 @@
+using Domain.Abandonments.Entities;
 using Domain.Abandonments.Enums;
 using Domain.Abandonments.ValueObjects;
-using Domain.Animals.ValueObjects;
+using Domain.Animals;
 using Domain.Common.ValueObjects;
 using Domain.Foundations.ValueObjects;
 using Domain.Primitives;
-using Domain.Reporters.ValueObjects;
-
 namespace Domain.Abandonments;
 
 public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 {
-    private readonly List<AnimalId> _animalsIds = [];
+    private readonly List<ReportAbandonmentImage> _images = [];
+    private readonly List<Animal> _animals = [];
     public string Title { get; private set; }
     public string Description { get; private set; }
-    public List<string> Images { get; private set; } = [];
     public ReportStatus Status { get; private set; }
     public Location Location { get; private set; }
     public DateTime AbandonmentDateTime { get; private set; }
     public TimeSpan AbandonmentDuration => DateTime.UtcNow - AbandonmentDateTime;
     public AbandonmentStatus AbandonmentStatus { get; private set; }
+    public Reporter Reporter { get; private set; }
     public DateTime ReportDateTime { get; private set; }
     public DateTime? RescueDateTime { get; private set; }
     public TimeSpan? ResponseTime { get; private set; }
     public DateTime CreatedDateTime { get; private set; }
-    public DateTime UpdateDateTime { get; private set; }
-    public ReporterId ReporterId { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
     public FoundationId? FoundationId { get; private set; }
-    public IReadOnlyList<AnimalId> AnimalIds => _animalsIds.AsReadOnly();
+
+    public IReadOnlyList<Animal> Animals => _animals.AsReadOnly();
+
+    public IReadOnlyCollection<ReportAbandonmentImage> Images => _images.AsReadOnly();
 
     private ReportAbandonment(
         ReportAbandonmentId reportAbandonmentId,
         string title,
         string description,
-        List<string> images,
         ReportStatus status,
         Location location,
         DateTime abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
-        ReporterId reporterId
-        ) : base(reportAbandonmentId)
+        Reporter reporter,
+        List<Animal> animals,
+        List<ReportAbandonmentImage> images
+    ) : base(reportAbandonmentId)
     {
         Title = title;
         Description = description;
-        Images = images;
         Status = status;
         Location = location;
         AbandonmentDateTime = abandonmentDateTime;
         AbandonmentStatus = abandonmentStatus;
-        ReporterId = reporterId;
+        Reporter = reporter;
+        _animals = animals;
+        _images = images;
     }
 
     public static ReportAbandonment Create(
         string title,
         string description,
-        List<string> images,
         Location location,
-        DateTime abandonmentDateTime,
+        DateTime? abandonmentDateTime,
         AbandonmentStatus abandonmentStatus,
-        ReporterId reporterId
+        Reporter reporter,
+        List<Animal> animals,
+        List<ReportAbandonmentImage> images
     )
     {
         return new ReportAbandonment(
             ReportAbandonmentId.CreateUnique(),
             title,
             description,
-            images,
             ReportStatus.Reported,
             location,
-            abandonmentDateTime,
+            abandonmentDateTime ?? DateTime.UtcNow,
             abandonmentStatus,
-            reporterId
+            reporter,
+            animals,
+            images
         );
     }
 
     public void SetRescueDate(DateTime rescueDateTime)
     {
         RescueDateTime = rescueDateTime;
-        UpdateDateTime = DateTime.UtcNow;
+        UpdatedDateTime = DateTime.UtcNow;
 
         if (rescueDateTime > ReportDateTime)
         {
@@ -85,5 +91,25 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
 
         Status = ReportStatus.Attending;
     }
+
+
+    public void SetFoundation(FoundationId foundationId)
+    {
+        FoundationId = foundationId;
+    }
+
+    public void UpdateStatus(ReportStatus status)
+    {
+        Status = status;
+    }
+
+    public void AddImage(string url)
+    {
+        _images.Add(ReportAbandonmentImage.Create(url));
+    }
+
+#pragma warning disable CS8618
+    private ReportAbandonment() { }
+#pragma warning restore CS8618
 
 }

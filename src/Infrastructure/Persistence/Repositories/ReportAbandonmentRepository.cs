@@ -1,30 +1,52 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Abandonments;
+using Domain.Abandonments.Enums;
+using Domain.Abandonments.ValueObjects;
 using Domain.Foundations.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-
-public class ReportAbandonmentRepository : IReportAbandonmentRepository
+public class ReportAbandonmentRepository(ApplicationDbContext context) : IReportAbandonmentRepository
 {
-    private static readonly List<ReportAbandonment> _reportAbandonments = [];
-
-    public void Add(ReportAbandonment reportAbandonment)
+    public async Task AddAsync(ReportAbandonment reportAbandonment)
     {
-        _reportAbandonments.Add(reportAbandonment);
+        await context.ReportAbandonments.AddAsync(reportAbandonment);
+        await context.SaveChangesAsync();
     }
 
     public async Task<List<ReportAbandonment>> GetReportsByFoundationIdAsync(FoundationId foundationId)
     {
-        await Task.CompletedTask;
-
-        return _reportAbandonments.Where(ra => ra.FoundationId! == foundationId).ToList();
+        return await context.ReportAbandonments.Where(
+        r => r.FoundationId! == foundationId &&
+        r.Status != ReportStatus.Reported)
+            .Include(r => r.Animals)
+            .Include(r => r.Images)
+            .Include(r => r.Reporter)
+            .ToListAsync();
     }
 
     public async Task<List<ReportAbandonment>> GetAllReports()
     {
-        await Task.CompletedTask;
+        return await context.ReportAbandonments
+            .Include(r => r.Animals)
+            .Include(r => r.Images)
+            .Include(r => r.Reporter)
+            .ToListAsync();
+    }
 
-        return [.. _reportAbandonments];
+    public async Task<ReportAbandonment?> GetByIdAsync(ReportAbandonmentId reportAbandonmentId)
+    {
+        return await context.ReportAbandonments
+            .Include(r => r.Animals)
+            .Include(r => r.Images)
+            .Include(r => r.Reporter)
+            .FirstOrDefaultAsync(r => r.Id == reportAbandonmentId);
+    }
+
+    public async Task UpdateAsync(ReportAbandonment reportAbandonment)
+    {
+        context.ReportAbandonments.Update(reportAbandonment);
+        await context.SaveChangesAsync();
     }
 }

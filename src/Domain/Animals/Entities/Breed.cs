@@ -1,21 +1,16 @@
-using Domain.Animals.ValueObjects;
-using Domain.Primitives;
-
 namespace Domain.Animals.Entities;
 
-public sealed class Breed : Entity<BreedId>
+public sealed class Breed
 {
-    public string Name { get; }
-    private Breed(BreedId BreedId, string name) : base(BreedId)
+    public int Id { get; }
+    public string Value { get; }
+    private Breed(string value)
     {
-        Name = name;
+        Value = value;
     }
 
-    public static Breed Create(string name)
+    public static Breed Create(string value)
     {
-        return new Breed(
-            BreedId.CreateUnique(),
-            name
-        );
+        return new Breed(value);
     }
 }

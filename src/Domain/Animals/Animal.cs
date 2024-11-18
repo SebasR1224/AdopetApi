@@ -1,3 +1,4 @@
+using Domain.Animals.Entities;
 using Domain.Animals.Enums;
 using Domain.Animals.ValueObjects;
 using Domain.Foundations.ValueObjects;
@@ -7,79 +8,85 @@ namespace Domain.Animals;
 
 public sealed class Animal : AggregateRoot<AnimalId>
 {
-    public string Name { get; }
-    public string Description { get; }
-    public string Image { get; }
-    public int Age { get; }
-    public string CoatColor { get; }
-    public float Weight { get; }
-    public SpecieId SpecieId { get; }
-    public BreedId BreedId { get; }
-    public AnimalStatus Status { get; }
-    public AnimalGender Gender { get; }
-    public FoundationId? FoundationId { get; }
-    public DateTime CreateDateTime { get; }
-    public DateTime UpdateDateTime { get; }
+    private readonly List<AnimalImage> _images = [];
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public int? Age { get; private set; }
+    public string CoatColor { get; private set; }
+    public decimal? Weight { get; private set; }
+    public string Specie { get; private set; }
+    public string? Breed { get; private set; }
+    public AnimalStatus Status { get; private set; }
+    public AnimalGender Gender { get; private set; }
+    public FoundationId? FoundationId { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
+
+    public IReadOnlyCollection<AnimalImage> Images => _images.AsReadOnly();
 
     private Animal(
         AnimalId animalId,
         string name,
         string description,
-        string image,
-        int age,
+        int? age,
         string coatColor,
-        float weight,
-        SpecieId specieId,
-        BreedId breedId,
+        decimal? weight,
+        string specie,
+        string? breed,
         AnimalStatus status,
-        AnimalGender gender,
-        FoundationId? foundationId,
-        DateTime createdDateTime,
-        DateTime updatedDateTime)
+        AnimalGender gender)
        : base(animalId)
     {
         Name = name;
         Description = description;
-        Image = image;
         Age = age;
         CoatColor = coatColor;
         Weight = weight;
-        SpecieId = specieId;
-        BreedId = breedId;
+        Specie = specie;
+        Breed = breed;
         Status = status;
         Gender = gender;
-        FoundationId = foundationId;
-        CreateDateTime = createdDateTime;
-        UpdateDateTime = updatedDateTime;
     }
 
     public static Animal Create(
-        string name,
+        string? name,
         string description,
-        string image,
-        int age,
+        string? image,
+        int? age,
         string coatColor,
-        float weight,
-        SpecieId specieId,
-        BreedId breedId,
-        AnimalGender gender,
-        FoundationId? foundationId
+        decimal? weight,
+        string specie,
+        string? breed,
+        AnimalGender gender
     )
     {
-        return new Animal(
+
+        var animal = new Animal(
             AnimalId.CreateUnique(),
-            name,
+            name ?? $"{specie} {coatColor}",
             description,
-            image,
             age,
             coatColor,
             weight,
-            specieId,
-            breedId,
+            specie,
+            breed,
             AnimalStatus.Abandoned,
-            gender,
-            foundationId,
-            DateTime.UtcNow,
-            DateTime.UtcNow);
+            gender
+        );
+
+        if (image is not null) animal.AddImage(image);
+
+        return animal;
     }
+
+    public void AddImage(string url)
+    {
+        _images.Add(AnimalImage.Create(url));
+    }
+
+
+#pragma warning disable CS8618
+    private Animal() { }
+#pragma warning restore CS8618
+
 }

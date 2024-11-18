@@ -1,4 +1,3 @@
-using Application.Authentication.Common;
 using ErrorOr;
 using MediatR;
 
@@ -15,4 +14,4 @@ public record RegisterCommand(
     string Email,
     string Username,
     string Password
-) : IRequest<ErrorOr<AuthenticationResult>>;
+) : IRequest<ErrorOr<Unit>>;

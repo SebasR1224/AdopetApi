@@ -1,11 +1,23 @@
 using System.Text;
+using Amazon.S3;
 using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Password;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
+using Application.Common.Interfaces.Services.Email;
+using Application.Common.Interfaces.Services.Upload;
 using Infrastructure.Authentication;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Email;
+using Infrastructure.Services.Location;
+using Infrastructure.Services.Password;
+using Infrastructure.Services.Upload.Aws;
+using Infrastructure.Services.Upload.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -19,21 +31,57 @@ public static class DependencyInjection
     {
         services
             .AddAuth(configuration)
-            .AddPersistence();
+            .AddPersistence(configuration)
+            .AddEmailServices(configuration)
+            .AddUploadServices(configuration)
+            .AddServices();
 
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-
         return services;
     }
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services)
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
+
+        services.AddScoped<PublishDomainEventsInterceptor>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReportAbandonmentRepository, ReportAbandonmentRepository>();
         services.AddScoped<IFoundationRepository, FoundationRepository>();
+        services.AddScoped<IAnimalRepository, AnimalRepository>();
+        services.AddScoped<IFileRecordRepository, FileRecordRepository>();
+        services.AddScoped<IPasswordRecoveryTokenRepository, PasswordRecoveryTokenRepository>();
+
         return services;
     }
 
+    private static IServiceCollection AddEmailServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var emailSettings = new EmailSettings();
+        configuration.Bind(EmailSettings.SectionName, emailSettings);
+
+        services.AddSingleton(Options.Create(emailSettings));
+        return services;
+    }
+
+    private static IServiceCollection AddUploadServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var awsSettings = new AWSSettings();
+        configuration.Bind(AWSSettings.SectionName, awsSettings);
+
+        services.AddAWSService<IAmazonS3>();
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<ILocationService, LocationService>(); //TODO use google maps api
+        services.AddSingleton<IEmailService, EmailService>();
+
+        return services;
+    }
 
     private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {

@@ -1,29 +1,34 @@
 using Domain.Foundations.ValueObjects;
 using Domain.Primitives;
+using Domain.Users.Events;
 
 namespace Domain.Users;
 
-public sealed class User
+public sealed class User : AggregateRoot<UserId>
 {
-    public Guid Id { get; }
-    public string Name { get; }
-    public string LastName { get; }
+    private readonly int _emailVerificationTokenExpiryHours = 24;
+    public string Name { get; private set; }
+    public string LastName { get; private set; }
+    public string? ProfilePicture { get; private set; }
     public string FullName => $"{Name} {LastName}";
-    public string PersonalId { get; }
-    public DateOnly BirthDate { get; }
-    public string PhoneNumber { get; }
-    public string Address { get; }
-    public string Email { get; }
-    public string Username { get; }
-    public string Password { get; }
-    public bool Active { get; }
-    public DateTime CreatedDateTime { get; }
-    public DateTime UpdatedDateTime { get; }
+    public string PersonalId { get; private set; }
+    public DateOnly BirthDate { get; private set; }
+    public string PhoneNumber { get; private set; }
+    public string Address { get; private set; }
+    public string Email { get; private set; }
+    public string Username { get; private set; }
+    public string Password { get; private set; }
+    public bool IsActive { get; private set; }
+    public bool IsEmailVerified { get; private set; }
+    public string EmailVerificationToken { get; private set; }
+    public DateTime EmailVerificationTokenExpiry { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+    public DateTime UpdatedDateTime { get; private set; }
 
-    public FoundationId? FoundationId { get; }
+    public FoundationId? FoundationId { get; private set; }
 
     private User(
-        Guid id,
+        UserId id,
         string name,
         string lastName,
         string personalId,
@@ -33,13 +38,11 @@ public sealed class User
         string email,
         string username,
         string password,
-        bool active,
-        FoundationId? foundationId,
-        DateTime createdDateTime,
-        DateTime updatedDateTime
-    )
+        bool isActive,
+        string emailVerificationToken,
+        FoundationId? foundationId
+    ) : base(id)
     {
-        Id = id;
         Name = name;
         LastName = lastName;
         PersonalId = personalId;
@@ -49,10 +52,10 @@ public sealed class User
         Email = email;
         Username = username;
         Password = password;
-        Active = active;
+        IsActive = isActive;
+        EmailVerificationToken = emailVerificationToken;
+        EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(_emailVerificationTokenExpiryHours);
         FoundationId = foundationId;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
     }
 
     public static User Create(
@@ -68,8 +71,8 @@ public sealed class User
         FoundationId? foundationId
     )
     {
-        return new User(
-            Guid.NewGuid(),
+        var user = new User(
+            UserId.CreateUnique(),
             name,
             lastName,
             personalId,
@@ -80,9 +83,38 @@ public sealed class User
             username,
             password,
             true,
-            foundationId,
-            DateTime.UtcNow,
-            DateTime.UtcNow
+            Guid.NewGuid().ToString(),
+            foundationId
         );
+
+        user.AddDomainEvent(new EmailVerificationTokenGeneratedEvent(
+            user.Id,
+            user.Email,
+            user.Username,
+            user.EmailVerificationToken));
+
+        return user;
     }
+
+    public void AddProfilePicture(string url)
+    {
+        ProfilePicture = url;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
+    public void VerifyEmail()
+    {
+        IsEmailVerified = true;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
+    public void UpdatePassword(string hashedPassword)
+    {
+        Password = hashedPassword;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
+#pragma warning disable CS8618
+    private User() { }
+#pragma warning restore CS8618
 }
