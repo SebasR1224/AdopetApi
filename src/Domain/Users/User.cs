@@ -108,6 +108,12 @@ public sealed class User : AggregateRoot<UserId>
         UpdatedDateTime = DateTime.UtcNow;
     }
 
+    public void UpdatePassword(string hashedPassword)
+    {
+        Password = hashedPassword;
+        UpdatedDateTime = DateTime.UtcNow;
+    }
+
 #pragma warning disable CS8618
     private User() { }
 #pragma warning restore CS8618

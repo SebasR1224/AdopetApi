@@ -9,7 +9,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Options;
 
-namespace Application.PasswordRecovery.Commands;
+namespace Application.PasswordRecovery.Commands.RequestReset;
 
 public class RequestResetPasswordCommandHandler(
     IUserRepository userRepository,
