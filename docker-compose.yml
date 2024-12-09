@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+      - "8081:443"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqlServer=Server=sqlserver;Database=Adopet;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+      - JwtSettings__Secret=tu_jwt_secret_aqui
+      - JwtSettings__ExpiryMinutes=60
+      - JwtSettings__Issuer=Adopet
+      - JwtSettings__Audience=Adopet
+      - AWS__BucketName=nombre_del_bucket
+      - AWS__AccessKey=tu_access_key
+      - AWS__SecretKey=tu_secret_key
+      - AWS__Region=us-west-2
+      - FileStorage__BaseUrl=http://localhost:8080
+      - EmailSettings__SmtpServer=email_server
+      - EmailSettings__Port=2525
+      - EmailSettings__SenderEmail=adopet@adopet.com
+      - EmailSettings__SenderName=Adopet
+      - EmailSettings__Username=username
+      - EmailSettings__Password=password
+      - EmailSettings__UseSSL=true
+      - Configuration__FrontendUrl=http://localhost:5173
+    networks:
+      - backend-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - backend-network
+
+  migrations:
+    build:
+      context: .
+      dockerfile: Migrations.Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__SqlServer=Server=sqlserver;Database=Adopet;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  sqlserver_data:

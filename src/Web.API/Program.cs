@@ -1,6 +1,5 @@
 using Application;
 using Infrastructure;
-using Microsoft.Extensions.FileProviders;
 using Web.API;
 using Web.API.Extensions;
 using Web.API.Middlewares;
@@ -12,6 +11,22 @@ var builder = WebApplication.CreateBuilder(args);
         .AddInfrastructure(builder.Configuration)
         .AddApplication(builder.Configuration);
 }
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(builder.Configuration["Configuration:FrontendUrl"]!)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(80);
+    serverOptions.ListenAnyIP(443);
+});
 
 var app = builder.Build();
 {
@@ -28,6 +43,7 @@ var app = builder.Build();
     app.UseAuthorization();
     app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     app.MapControllers();
+    app.UseCors();
 
     app.Run();
 };
