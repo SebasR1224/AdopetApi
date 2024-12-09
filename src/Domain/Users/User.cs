@@ -83,7 +83,7 @@ public sealed class User : AggregateRoot<UserId>
             username,
             password,
             true,
-            Guid.NewGuid().ToString(),
+            Guid.NewGuid().ToString("N"),
             foundationId
         );
 
