@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Web.API;
+using Microsoft.Extensions.FileProviders;
 using Web.API.Extensions;
 using Web.API.Middlewares;
 
@@ -44,6 +45,18 @@ var app = builder.Build();
     app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     app.MapControllers();
     app.UseCors();
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
+        RequestPath = "/public"
+    });
+
+    app.UseDirectoryBrowser(new DirectoryBrowserOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
+        RequestPath = "/public"
+    });
 
     app.Run();
 };

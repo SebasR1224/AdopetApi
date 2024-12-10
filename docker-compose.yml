@@ -30,8 +30,12 @@ services:
       - EmailSettings__Password=password
       - EmailSettings__UseSSL=true
       - Configuration__FrontendUrl=http://localhost:5173
+      - StaticFiles__Path=/app/public
+      - StaticFiles__RequestPath=/public
     networks:
       - backend-network
+    volumes:
+      - static_files:/app/public
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -62,3 +66,4 @@ networks:
 
 volumes:
   sqlserver_data:
+  static_files:

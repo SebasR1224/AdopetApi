@@ -17,4 +17,10 @@ RUN dotnet publish "Web.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Crear directorio para archivos estáticos
+RUN mkdir -p /app/public
+VOLUME /app/public
+
+ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "Web.API.dll"]
