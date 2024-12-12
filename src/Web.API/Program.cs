@@ -23,12 +23,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(80);
-    serverOptions.ListenAnyIP(443);
-});
-
 var app = builder.Build();
 {
     if (app.Environment.IsDevelopment())
@@ -47,12 +41,6 @@ var app = builder.Build();
     app.UseCors();
 
     app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
-        RequestPath = "/public"
-    });
-
-    app.UseDirectoryBrowser(new DirectoryBrowserOptions
     {
         FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
         RequestPath = "/public"
