@@ -10,6 +10,7 @@ public class AuthenticationMappingConfig : IRegister
     {
         config.NewConfig<AuthenticationResult, AuthenticationResponse>()
             .Map(dest => dest.Id, src => src.User.Id.Value)
+            .Map(dest => dest.FoundationId, src => src.User.FoundationId.Value)
             .Map(dest => dest, src => src.User);
     }
 }

@@ -51,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<IAnimalRepository, AnimalRepository>();
         services.AddScoped<IFileRecordRepository, FileRecordRepository>();
         services.AddScoped<IPasswordRecoveryTokenRepository, PasswordRecoveryTokenRepository>();
+        services.AddScoped<ISpecieRepository, SpecieRepository>();
 
         return services;
     }

@@ -1,5 +1,6 @@
 using Domain.Abandonments;
 using Domain.Animals;
+using Domain.Animals.Entities;
 using Domain.FileRecords;
 using Domain.Foundations;
 using Domain.PasswordRecovery;
@@ -18,6 +19,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Foundation> Foundations { get; set; }
     public DbSet<FileRecord> FileRecords { get; set; }
     public DbSet<PasswordRecoveryToken> PasswordRecoveryTokens { get; set; }
+    public DbSet<Specie> Species { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder

@@ -1,10 +1,17 @@
+using Application.Config.Queries.Species;
+using Contracts.Species;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Web.API.Controllers;
 
-[ApiController]
-[Route("api/config")]
-public class ConfigController(IMapper mapper, ISender mediator) : ApiController
+[Route("api/species")]
+[AllowAnonymous]
+public class SpeciesController(IMapper mapper, ISender mediator) : ApiController
 {
-    [HttpGet("species")]
+    [HttpGet]
     public async Task<IActionResult> GetAllSpecies()
     {
         var speciesResult = await mediator.Send(new GetAllSpeciesQuery());
