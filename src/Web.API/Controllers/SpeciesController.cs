@@ -1,4 +1,4 @@
-using Application.Config.Queries.Species;
+using Application.Species.Queries.Species;
 using Contracts.Species;
 using MapsterMapper;
 using MediatR;
