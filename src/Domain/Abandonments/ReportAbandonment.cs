@@ -1,5 +1,6 @@
 using Domain.Abandonments.Entities;
 using Domain.Abandonments.Enums;
+using Domain.Abandonments.Events;
 using Domain.Abandonments.ValueObjects;
 using Domain.Animals;
 using Domain.Common.ValueObjects;
@@ -65,11 +66,15 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
         List<ReportAbandonmentImage> images
     )
     {
-        return new ReportAbandonment(
+        var status = reporter.IsAnonymous
+            ? ReportStatus.Reported
+            : ReportStatus.PendingApproval;
+
+        var report = new ReportAbandonment(
             ReportAbandonmentId.CreateUnique(),
             title,
             description,
-            ReportStatus.Reported,
+            status,
             location,
             abandonmentDateTime ?? DateTime.UtcNow,
             abandonmentStatus,
@@ -77,6 +82,10 @@ public sealed class ReportAbandonment : AggregateRoot<ReportAbandonmentId>
             animals,
             images
         );
+
+        report.AddDomainEvent(new EmailVerificationReportEvent(report.Id, report.Reporter.Email, report.Reporter.Name));
+
+        return report;
     }
 
     public void SetRescueDate(DateTime rescueDateTime)

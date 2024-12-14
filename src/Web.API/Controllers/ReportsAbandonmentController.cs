@@ -65,6 +65,7 @@ public class ReportsAbandonmentController(IMapper mapper, ISender mediator) : Ap
     }
 
     [HttpPut("{id}/status")]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateReportStatus(Guid id, [FromBody] UpdateReportStatusRequest request)
     {
         var command = new UpdateReportStatusCommand(id, request.Status);
