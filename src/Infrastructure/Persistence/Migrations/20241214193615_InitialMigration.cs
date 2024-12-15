@@ -33,6 +33,7 @@ namespace Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     LegalName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Nit = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Location_Latitude = table.Column<double>(type: "double precision", nullable: false),
